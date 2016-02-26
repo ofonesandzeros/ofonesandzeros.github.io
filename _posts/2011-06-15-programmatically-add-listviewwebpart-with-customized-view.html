@@ -3,11 +3,7 @@ layout: post
 status: publish
 published: true
 title: Programmatically Add ListViewWebPart with Customized View
-author:
-  display_name: bryan
-  login: bryan
-  email: bryan.napier.md@gmail.com
-  url: ''
+author: Bryan Napier
 author_login: bryan
 author_email: bryan.napier.md@gmail.com
 wordpress_id: 205
@@ -176,77 +172,76 @@ comments:
 <p>As the title suggests, the scenario is that we are adding a ListViewWebPart to a page, utilizing one of the current list views as a "template", but making some changes for the purposes of this web part.</p>
 <h3>Solution</h3>
 <p>I recommend hitting the "view source" button on the syntax highlighter, I really need to switch to a wider blog template :-(.  In any event, here is the solution that I employed, I added numerous comments to describe why things were being done.  Hopefully it saves someone some time.</p>
-<p>[sourcecode language="c#"]<br />
-            SPLimitedWebPartManager limitedWebPartManager = null;<br />
-            ListViewWebPart wp = null;</p>
-<p>            try<br />
-            {<br />
-                // assume that you have a limitedWebPartManager variable containing an<br />
-                // instance of a SPLimitedWebPartManager class.</p>
-<p>                // also assume that you have a list variable containing a reference to the<br />
-                // SPList that you are pointing this ListViewWebPart at.</p>
-<p>                // create an instance of the ListViewWebPart<br />
-                wp = new ListViewWebPart();<br />
-                // convert the list GUID to a string, must include braces (ToString("B")) and be in uppers (ToUpper())<br />
-                wp.ListName = list.ID.ToString("B").ToUpper();<br />
-                // optionally set the title of the web part<br />
-                wp.Title = "I Love List Views";</p>
-<p>                // add the web part to the limited web part manager.  when you do this, a "hidden" view will be created<br />
-                // on the list referenced by the list variable.  we will later get a reference to this hidden view and bend it<br />
-                // to our will.<br />
-                limitedWebPartManager.AddWebPart(wp, "whatever web part zone you want to add it to", 1); // the 1 is the index within the zone<br />
-                // you need to update the list because a view was just added to it<br />
-                list.Update();</p>
-<p>                // now that the web part has been added we need to get a fresh reference to it from the limitedWebPartManager.<br />
-                // there are plenty of great ways to do this, in this example i will be using the low-tech approach of enumerating the<br />
-                // WebParts collection and checking for the type and title that matches our part.  i am quite positive there are more<br />
-                // efficient ways of doing this, but this code gets called exactly once every couple months, so efficiency isn't worth<br />
-                // the extra development cycles<br />
-                foreach (System.Web.UI.WebControls.WebParts.WebPart webPart in limitedWebPartManager.WebParts)<br />
-                {<br />
-                    // check to see if the type of the web part is ListViewWebPart, and if so, check if the title matches our guy.<br />
-                    if (webPart is ListViewWebPart &amp;amp;&amp;amp; webPart.Title.Equals("I Love List Views"))<br />
-                    {<br />
-                        // cast the web part to a ListViewWebPart so we can start to tweak its properties<br />
-                        var listViewWebPart = webPart as ListViewWebPart;</p>
-<p>                        // here is some of the magic.  the web part now has its ViewGuid property populated which<br />
-                        // contains the Guid of the hidden view.  we get a reference to it here.<br />
-                        var view = list.Views[new Guid(listViewWebPart.ViewGuid)];</p>
-<p>                        // here we grab a reference to a template view.  this may be the default view of the list,<br />
-                        // or maybe you have another view that you created that you want to use.  you don't have to<br />
-                        // do this, but in this scenario i wanted to copy the filter and sort settings from an existing view.<br />
-                        var templateView = list.Views["Name Of Template View"];</p>
-<p>                        // now we drop all of the view fields in the hidden view<br />
-                        view.ViewFields.DeleteAll();<br />
-                        // now we are going to go through a string array and add each of the strings to the view fields collection.  again,<br />
-                        // you don't have to do this, but if you want to change what columns are displayed in your ListViewWebPart, you will<br />
-                        // need to muck with the ViewFields of the view.<br />
-                        Array.ForEach(new string[] { "First Name", "Last Name", "Address" }, f => view.ViewFields.Add(f));</p>
-<p>                        // here we copy the Query straight from the templateView.  if you didn't have a templateView you could always<br />
-                        // just create an SPQuery instance and assign it to the view.Query property.  no points will be taken off for doing that.<br />
-                        view.Query = templateView.Query;</p>
-<p>                        // update our hidden view, and bask in the awesomeness of our customized ListViewWebPart<br />
-                        view.Update();<br />
-                    }<br />
-                }<br />
-            }<br />
-            finally<br />
-            {<br />
-                // do some fun cleanup of disposable items.  if you are wondering about the .Web.Dispose() bit look for my<br />
-                // blog article on the memory leaks in the SPLimitedWebPartManager.<br />
-                if (limitedWebPartManager != null)<br />
-                {<br />
-                    if (limitedWebPartManager.Web != null)<br />
-                    {<br />
-                        limitedWebPartManager.Web.Dispose();<br />
-                    }</p>
-<p>                    limitedWebPartManager.Dispose();<br />
-                }</p>
-<p>                if (wp != null)<br />
-                {<br />
-                    wp.Dispose();<br />
-                }</p>
-<p>                // i probably missed some .Dispose()s since I cobbled this code together in Wordpress and not Visual Studio<br />
-            }<br />
-        }<br />
-[/sourcecode] </p>
+<p>{% highlight c# %}
+SPLimitedWebPartManager limitedWebPartManager = null;
+ListViewWebPart wp = null;
+try
+{
+    // assume that you have a limitedWebPartManager variable containing an
+    // instance of a SPLimitedWebPartManager class.
+    // also assume that you have a list variable containing a reference to the
+    // SPList that you are pointing this ListViewWebPart at.
+    // create an instance of the ListViewWebPart
+    wp = new ListViewWebPart();
+    // convert the list GUID to a string, must include braces (ToString("B")) and be in uppers (ToUpper())
+    wp.ListName = list.ID.ToString("B").ToUpper();
+    // optionally set the title of the web part
+    wp.Title = "I Love List Views";
+    // add the web part to the limited web part manager.  when you do this, a "hidden" view will be created
+    // on the list referenced by the list variable.  we will later get a reference to this hidden view and bend it
+    // to our will.
+    limitedWebPartManager.AddWebPart(wp, "whatever web part zone you want to add it to", 1); // the 1 is the index within the zone
+    // you need to update the list because a view was just added to it
+    list.Update();
+    // now that the web part has been added we need to get a fresh reference to it from the limitedWebPartManager.
+    // there are plenty of great ways to do this, in this example i will be using the low-tech approach of enumerating the
+    // WebParts collection and checking for the type and title that matches our part.  i am quite positive there are more
+    // efficient ways of doing this, but this code gets called exactly once every couple months, so efficiency isn't worth
+    // the extra development cycles
+    foreach (System.Web.UI.WebControls.WebParts.WebPart webPart in limitedWebPartManager.WebParts)
+    {
+        // check to see if the type of the web part is ListViewWebPart, and if so, check if the title matches our guy.
+        if (webPart is ListViewWebPart &amp;amp;&amp;amp; webPart.Title.Equals("I Love List Views"))
+        {
+            // cast the web part to a ListViewWebPat so we can start to tweak its properties
+            var listViewWebPart = webPart as ListViewWebPart;
+            // here is some of the magic.  the web part now has its ViewGuid property populated which
+            // contains the Guid of the hidden view.  we get a reference to it here.
+            var view = list.Views[new Guid(listViewWebPart.ViewGuid)];
+            // here we grab a reference to a template view.  this may be the default view of the list,
+            // or maybe you have another view that you created that you want to use.  you don't have to
+            // do this, but in this scenario i wanted to copy the filter and sort settings from an existing view.
+            var templateView = list.Views["Name Of Template View"];
+            // now we drop all of the view fields in the hidden view
+            view.ViewFields.DeleteAll();
+            // now we are going to go through a string array and add each of the strings to the view fields collection.  again,
+            // you don't have to do this, but if you want to change what columns are displayed in your ListViewWebPart, you will
+            // need to muck with the ViewFields of the view.
+            Array.ForEach(new string[] { "First Name", "Last Name", "Address" }, f => view.ViewFields.Add(f));
+            // here we copy the Query straight from the templateView.  if you didn't have a templateView you could always
+            // just create an SPQuery instance and assign it to the view.Query property.  no points will be taken off for doing that.
+            view.Query = templateView.Query;
+            // update our hidden view, and bask in the awesomeness of our customized ListViewWebPart
+            view.Update();
+        }
+    }
+}
+finally
+{
+    // do some fun cleanup of disposable items.  if you are wondering about the .Web.Dispose() bit look for my
+    // blog article on the memory leaks in the SPLimitedWebPartManager.
+    if (limitedWebPartManager != null)
+    {
+        if (limitedWebPartManager.Web != null)
+        {
+            limitedWebPartManager.Web.Dispose();
+        }
+        limitedWebPartManager.Dispose();
+    }
+    if (wp != null)
+    {
+        wp.Dispose();
+    }
+    // i probably missed some .Dispose()s since I cobbled this code together in Wordpress and not Visual Studio
+}
+{% endhighlight %}</p>

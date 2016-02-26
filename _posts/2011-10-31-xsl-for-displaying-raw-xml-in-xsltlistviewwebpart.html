@@ -3,11 +3,7 @@ layout: post
 status: publish
 published: true
 title: XSL for Displaying Raw XML in XsltListViewWebPart
-author:
-  display_name: bryan
-  login: bryan
-  email: bryan.napier.md@gmail.com
-  url: ''
+author: Bryan Napier
 author_login: bryan
 author_email: bryan.napier.md@gmail.com
 wordpress_id: 224
@@ -21,13 +17,13 @@ tags: []
 comments: []
 ---
 <p>I am writing this post so that I can hopefully save myself time in the future from trying to track down this little snippet that will take the incoming XML to an XsltListViewWebPart and render it out.  This is the snippet:</p>
-<p>[code language="xml"]<br />
-<?xml version="1.0" encoding="UTF-8"?><br />
- <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"><br />
- <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes"/><br />
- <xsl:template match="/"><br />
- <xmp><xsl:copy-of select="*"/></xmp><br />
- </xsl:template><br />
- </xsl:stylesheet><br />
-[/code]</p>
+<p>{% highlight xml %}
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes"/>
+  <xsl:template match="/">
+    <xmp><xsl:copy-of select="*"/></xmp>
+  </xsl:template>
+</xsl:stylesheet>
+{% endhighlight %}</p>
 <p>This snippet comes from a community content comment on MSDN:  http://msdn.microsoft.com/en-us/library/ff602042.aspx.</p>
