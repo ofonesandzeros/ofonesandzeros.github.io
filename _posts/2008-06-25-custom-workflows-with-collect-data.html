@@ -1,0 +1,37 @@
+---
+layout: post
+status: publish
+published: true
+title: Custom Workflows with Collect Data
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 60
+wordpress_url: http://blog.ofonesandzeros.com/2008/06/25/custom-workflows-with-collect-data/
+date: '2008-06-25 13:28:16 -0400'
+date_gmt: '2008-06-25 17:28:16 -0400'
+categories:
+- SharePoint
+tags: []
+comments: []
+---
+<p>In the past week I have implemented several custom workflows for a client using SharePoint Designer.&#160; The workflows were pretty simple:&#160; A Forms Services form would be completed, in the form would be a the Manager's name and e-mail address.&#160; The workflow would use the &quot;Collect Data&quot; action to perform an approval workflow, assigning an item to the manager specified in the form.&#160; Trouble was, the manager would receive the task notification, click the link in the e-mail to edit the task item, and receive an access denied error.</p>
+<p>For the purposes of troubleshooting I opened the permissions on the task list as much as possible, granting nt authorityall authenticated users the Full Control permission.&#160; Still the users received &quot;Access denied&quot;.&#160; Then, I found the following forum thread:</p>
+<p><a title="http://forums.microsoft.com/TechNet/ShowPost.aspx?PostID=1838253&amp;SiteID=17" href="http://forums.microsoft.com/TechNet/ShowPost.aspx?PostID=1838253&amp;SiteID=17">http://forums.microsoft.com/TechNet/ShowPost.aspx?PostID=1838253&amp;SiteID=17</a></p>
+<p>The solution wound up being a combination of two posts, this was by &quot;Vansen&quot;:</p>
+<blockquote><p>I opened up the Site using the Sharepoint Designer. Then i right-clicked the workflows folder and chose properties. In the Security Tab i clicked the link &quot;Manage Permissions using the browser&quot;. Then a new Browser window opened and i was able to adjust the rights for the Workflow Folder. In my case the rights inheritance was broken. I restored it and it worked.</p>
+</blockquote>
+<p>And this one by &quot;Andre Rentes&quot;:</p>
+<blockquote><p>I found a solution but not is the better...</p>
+<p>-&gt; Open Sharepoint Designer, </p>
+<p>-&gt; right click on Workflow 1 (My workflow)</p>
+<p>-&gt; select Publish Selected Files...</p>
+<p>-&gt; choose&#160; File System and write a location ( c: ) for example</p>
+<p>-&gt; Click OK</p>
+<p>&#160;</p>
+</blockquote>
+<p>Combining these two solutions fixed all three of the problematic workflows!&#160; Thanks guys!</p>

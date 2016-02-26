@@ -1,0 +1,82 @@
+---
+layout: post
+status: publish
+published: true
+title: '&quot;The security validation for this page is invalid&quot;'
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 79
+wordpress_url: http://blog.ofonesandzeros.com/2008/11/18/the-security-validation-for-this-page-is-invalid/
+date: '2008-11-18 22:09:51 -0500'
+date_gmt: '2008-11-19 02:09:51 -0500'
+categories:
+- SharePoint
+tags: []
+comments:
+- id: 21
+  author: chris
+  author_email: chris@c.com
+  author_url: ''
+  date: '2009-07-23 10:30:07 -0400'
+  date_gmt: '2009-07-23 14:30:07 -0400'
+  content: Type your comment here...
+- id: 22
+  author: chris
+  author_email: chris@c.com
+  author_url: ''
+  date: '2009-07-23 10:31:45 -0400'
+  date_gmt: '2009-07-23 14:31:45 -0400'
+  content: Holy cow thanks for this post. I've been racking my brain for days trying
+    to figure out why I kept getting the "AllowUnsafeUpdates" error.
+- id: 23
+  author: bryan
+  author_email: bryan.napier.md@gmail.com
+  author_url: http://
+  date: '2009-07-23 10:48:27 -0400'
+  date_gmt: '2009-07-23 14:48:27 -0400'
+  content: I'm glad the information was useful to you!
+- id: 24
+  author: Lee Carter
+  author_email: quiziqal@gmail.com
+  author_url: http://blog.quiziqal.com
+  date: '2009-11-16 15:38:07 -0500'
+  date_gmt: '2009-11-16 19:38:07 -0500'
+  content: Thank you for posting this - this issue has had me stumped for two days.
+    I just modified my code to set AllowUnsafeUpdates to true after calling BreakRoleInheritance()
+    and, like magic, no more dreaded "security validation" errors. Thanks again.
+---
+<p>I'm currently working on a SharePoint project that makes extensive use of programmatically setting ListItem ACL's.&#160; There is a List Event Handler which sets ACLs on the ItemAdded event, but then there is an administrative interface that enables administrators to reassign list items to another user which effectively means replacing the ACLs for the ListItem to give another user Contribute.</p>
+<p>In any event, I keep encountering the dreadful &quot;The security validation for this page is invalid&quot; error when trying to perform the ACL updates, specifically from web parts (haven't seemed to have this issue on list event handlers).&#160; Well it appears that I've finally come up with the magic combination of fixes.&#160; There are several <a href="http://blogs.msdn.com/sridhara/archive/2008/06/21/the-security-validation-for-this-page-is-invalid-error-when-updating-objects-through-sharepoint-object-model.aspx">blog</a> postings out there indicating that you should use &quot;AllowUnsafeUpdates&quot; on your SPWeb object.&#160; This seems to fix things for many people, however, the code I was working on calls &quot;BreakRoleInheritance&quot;.&#160; Apparently that bugger ends up reverting the &quot;AllowUnsafeUpdates&quot; flag back to false after you call it!</p>
+<p>Here's the information that Paul Yau shared in <a href="http://social.msdn.microsoft.com/Forums/en-US/sharepointdevelopment/thread/63106621-cbde-44d9-b3cf-07bddc0856f1/">a thread</a> on the MSDN forums which took care of my issue, thanks for sharing Paul!</p>
+<blockquote><p>Problem Description: </p>
+<p>=============== </p>
+<p>When you call SPList.BreakRoleInheritance(false) from an HTTP GET request, although you have specified SPWeb.AllUnsafeUpdates=true, you will still be thrown an exception </p>
+<p>Updates are currently disallowed on GET requests. To allow updates on a GET, set the 'AllowUnsafeUpdates' property on SPWeb. </p>
+<p>Cause: </p>
+<p>===== </p>
+<p>This is by design limitation of SPList.BreakRoleInheritance </p>
+<p>BreakRoleInheritance does it work in two steps. First, it needs to revert its permission to have same permission settings as parent (this is a less expensive operation, and give the list a fresh start on its road to unique permission). Later it checks CopyRoleAssignments parameter. If it is false, it takes an extra step to clean up permission on the list. A side effect of step 1 is that it dirties some internal objects in SPWeb, and cause them to be recreated. Unfortunately, the re-creation of those internal objects cause SPWeb.AllowUnsafeUpdates to have a default value which is false. That is, SPWeb.AllowUnsafeUpdates is reset in middle of call to SPList.BreakRoleInheritance, therefore we got the exception. </p>
+<p>Resolution: </p>
+<p>======== </p>
+<p>There are two possible workarounds to the issue: </p>
+<p>1.&#160;&#160;&#160;&#160;&#160;&#160; Call SPList.BreakRoleInheritance from a HTTP POST request. That is, we can first have a button on UI and have users to click. In response to users&#8217; click, we call SPList.BreakRoleInheritance. There is a first HTTP GET request by which, SharePoint has a chance to embed some digest to validate requests on return (HTTP POST). Therefore, we no longer need to set SPWeb.AllowUnsafeUpdates=true. This is recommended approach from security perspective. </p>
+<p>2.&#160;&#160;&#160;&#160;&#160;&#160; First call SPList.BreakRoleInheritance(true). Then, use custom code to clean up permission and create your own permission set for the list as needed. The sample code are: </p>
+<p>SPWeb web = SPControl.GetContextWeb(this.Context); </p>
+<p>SPListCollection lists = web.Lists; </p>
+<p>//Guid docLibGuid = lists.Add(&quot;Doc Lib Sample 1&quot;, &quot;Doc Lib Desc&quot;, SPListTemplateType.DocumentLibrary); </p>
+<p>//SPList docLib = lists[docLibGuid]; </p>
+<p>SPList docLib = lists[&quot;Doc Lib Sample 1&quot;]; </p>
+<p>//docLib.ParentWeb.AllowUnsafeUpdates = true; </p>
+<p>docLib.BreakRoleInheritance(true); //Exception throw here when the parameters is &quot;false&quot; </p>
+<p>web.AllowUnsafeUpdates = true; </p>
+<p>SPRoleAssignmentCollection roleAssigns = docLib.RoleAssignments; </p>
+<p>for (int i = roleAssigns.Count-1; i &gt;= 0; i--) </p>
+<p>{ </p>
+<p>&#160;&#160;&#160; roleAssigns.Remove(i); </p>
+<p>} </p>
+</blockquote>

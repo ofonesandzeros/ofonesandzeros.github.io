@@ -1,0 +1,32 @@
+---
+layout: post
+status: publish
+published: true
+title: Cannot start service SPAdmin on computer ‘.’
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 49
+wordpress_url: http://blog.ofonesandzeros.com/2008/03/25/cannot-start-service-spadmin-on-computer/
+date: '2008-03-25 10:45:53 -0400'
+date_gmt: '2008-03-25 14:45:53 -0400'
+categories:
+- SharePoint
+tags: []
+comments: []
+---
+<p>Came in the office today to an issue with a MOSS box that was recently stood up in our lab environment.&#160; The server was configured to do automatic updates, and installed SharePoint updates overnight.&#160; Turns out the upgrade portion of the update failed, and perusing the diagnostic logs revealed the following error:</p>
+<blockquote><p><font style="background-color: #ffffff">Cannot start service SPAdmin on computer '.'</font></p>
+</blockquote>
+<p>I came across the following blog posting that ultimately supplied the remedy:</p>
+<p><a href="http://blogs.technet.com/wbaer/archive/2007/10/15/kb934525-troubleshooting.aspx">Bill Baer : KB934525 Troubleshooting &quot;Cannot start service SPAdmin on computer '.'.&quot;</a> </p>
+<p>Option #4 took care of things:</p>
+<blockquote><ul>
+<li>On the machine where psconfig failed to start the SPAdmin service run:</li>
+</ul>
+<blockquote><p><code>%commonprogramfiles%Microsoft SharedWeb Server Extensions12BINpsconfig -cmd upgrade -inplace b2b -wait -force</code></p></blockquote>
+</blockquote>

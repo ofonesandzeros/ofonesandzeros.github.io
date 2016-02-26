@@ -1,0 +1,31 @@
+---
+layout: post
+status: publish
+published: true
+title: Troubleshooting TCP/UDP connectivity
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 194
+wordpress_url: http://www.ofonesandzeros.com/?p=194
+date: '2011-02-18 12:17:59 -0500'
+date_gmt: '2011-02-18 16:17:59 -0500'
+categories:
+- Windows
+tags:
+- network
+- ocs
+- troubleshooting
+comments: []
+---
+<p>I have spent the past several weeks installing, configuring, and mainly troubleshooting an OCS 2007 R2 instance.  One of the issues that we were facing is that we could place EV calls from within our network, but calls from outside the network (coming through the edge) would fail.  Basically the call would be placed, but as soon as the opposite end answered the call would disconnect.</p>
+<p>In any event, those details are not really why I am posting this.  What I ran into is that there are several network segments and firewall rules between the client, the edge, the mediation server, the front-end, etc.  While we all know how to troubleshoot TCP connectivity issues easy enough using telnet, I was struggling to troubleshoot UDP connectivity, specifically for the STUN protocol (UDP port 3478).  I came across the following utility that was infinitely helpful in determining the issue:</p>
+<ul>
+<li><a href="http://www.pcausa.com/Utilities/pcattcp.htm">http://www.pcausa.com/Utilities/pcattcp.htm</a></li>
+</ul>
+<p>This utility allows you to setup a transmitting and receiving pair, it's a tiny executable, and it has no discernible external DLL requirements.  I highly recommend adding it to your toolbox!</p>
+<p><a href="http://www.pcausa.com/Utilities/pcattcp.htm"></a></p>

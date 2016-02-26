@@ -1,0 +1,50 @@
+---
+layout: post
+status: publish
+published: true
+title: Unable to access trusted domain accounts in people picker
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 190
+wordpress_url: http://www.ofonesandzeros.com/?p=190
+date: '2010-08-30 15:14:05 -0400'
+date_gmt: '2010-08-30 19:14:05 -0400'
+categories:
+- SharePoint
+tags:
+- ad
+- dns
+- SharePoint
+comments:
+- id: 55
+  author: kusdiantono
+  author_email: kusdiantono@gmail.com
+  author_url: ''
+  date: '2012-12-11 04:14:25 -0500'
+  date_gmt: '2012-12-11 04:14:25 -0500'
+  content: I have same problem like this article, any way can you help me more detail
+    how to do it?
+- id: 56
+  author: bryan
+  author_email: bryan.napier.md+blog@gmail.com
+  author_url: ''
+  date: '2012-12-11 14:18:29 -0500'
+  date_gmt: '2012-12-11 14:18:29 -0500'
+  content: |-
+    I can try!  Have you already set your stsadm searchadforests property as per the following TechNet article:
+
+    http://technet.microsoft.com/en-us/library/cc263460(v=office.12).aspx
+
+    ?
+
+    In the case that I reference, we had already setup stsadm appropriately, however things still were not behaving, and it was not related to the account specified in the searchadforests property or anything simple like that.  Instead, when the trust was setup between the resource domain and the authentication domain, the engineer ended up setting up the authentication domain as a secondary domain on the resource domains DNS.  Instead, a DNS forwarder should have been setup on the resource domains DNS to forward requests for the authentication domain to the authentication domain's DNS servers.
+
+    Does that make sense?
+---
+<p>For several weeks we have been wrestling with an issue where a client's MOSS install was not able to see the accounts in a trusted domain (two way trust).  The server itself could resolve the accounts just fine, for instance if you were to set file system ACL permissions you could select accounts from the trusted domain without any issue, but if you tried to locate one of those accounts via the SharePoint people picker dialog, it would not locate the account.  Netmon captures revealed that the lookup was making it to the DC and the response was a populated as you would expect, but still, no workie.  Several stsadm.exe -o setproperty commands later and several server rebuilds, still no luck.</p>
+<p>Finally today my colleague <a href="http://www.askthemct.com">Stephen Rea</a> was able to locate the issue and resolve it.  As is often the case, seemingly complex issues turn out to be caused by very simple oversights.  In this case, the trusted domain had been setup in DNS for the resource domain as a secondary domain.  Secondary domains hosted on Windows DNS servers going across a WAN link typically perform erratically.  Simply forwarding the DNS requests for the trusted domain over to the trusted domain DNS servers resolved the issue and SharePoint immediately behaved as expected.  </p>

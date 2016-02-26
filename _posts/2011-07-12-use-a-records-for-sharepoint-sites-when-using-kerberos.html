@@ -1,0 +1,90 @@
+---
+layout: post
+status: publish
+published: true
+title: Use A Records for SharePoint Sites When Using Kerberos
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 223
+wordpress_url: http://www.ofonesandzeros.com/2011/07/12/use-a-records-for-sharepoint-sites-when-using-kerberos/
+date: '2011-07-12 21:53:46 -0400'
+date_gmt: '2011-07-13 01:53:46 -0400'
+categories:
+- SharePoint
+tags:
+- kerberos
+- SharePoint
+comments:
+- id: 62
+  author: Use A Records for SharePoint Sites When Using Kerberos | | SharePoint Blog
+  author_email: ''
+  author_url: http://kb4sp.wordpress.com/2011/10/11/use-a-records-for-sharepoint-sites-when-using-kerberos/
+  date: '2012-05-01 04:21:29 -0400'
+  date_gmt: '2012-05-01 04:21:29 -0400'
+  content: '[...] Use A Records for SharePoint Sites When Using Kerberos [...] '
+- id: 186
+  author: http://www.squidoo.com/divingholidays22
+  author_email: forrestpaulk@gmail.com
+  author_url: http://www.squidoo.com/divingholidays22
+  date: '2013-01-22 23:42:23 -0500'
+  date_gmt: '2013-01-22 23:42:23 -0500'
+  content: I didn’t know about this before now. Thank you for the information.
+- id: 15514
+  author: Dominga
+  author_email: marquitaoleary@gmail.com
+  author_url: http://Noreen.blog.com
+  date: '2014-09-25 04:30:28 -0400'
+  date_gmt: '2014-09-25 04:30:28 -0400'
+  content: "I read a lot of interesting content here. Probably you spend a lot of
+    time writing, i know how \r\nto save you a lot of work, there is an online tool
+    that \r\ncreates readable, SEO friendly posts in minutes, just \r\nsearch in google
+    - laranitas free content source"
+- id: 15921
+  author: ecouteurs beats
+  author_email: pufbiixsnkv@gmail.com
+  author_url: http://www.eabf.org
+  date: '2014-10-19 09:21:57 -0400'
+  date_gmt: '2014-10-19 09:21:57 -0400'
+  content: "<a href=\"http://www.freedomira.org\" rel=\"nofollow\">cheap dr dre beats
+    uk</a> <a href=\"http://www.aleixcuberes.com\" rel=\"nofollow\">Mulberry Outlet
+    York UK</a> <a href=\"http://www.caribbeanislandinns.com\" rel=\"nofollow\">chaussure
+    louboutin pas cher</a> <a href=\"http://www.caribbeanislandinns.com\" rel=\"nofollow\">chaussures
+    louboutin pas cher</a> <a href=\"http://www.caribbeanislandinns.com\" rel=\"nofollow\">chaussure
+    louboutin femme</a> <a href=\"http://www.caribbeanislandinns.com\" rel=\"nofollow\">chaussure
+    louboutin homme</a> <a href=\"http://www.caribbeanislandinns.com\" rel=\"nofollow\">chaussure
+    louboutin pas cher</a> <a href=\"http://www.caribbeanislandinns.com\" rel=\"nofollow\">chaussures
+    louboutin pas cher</a> <a href=\"http://www.caribbeanislandinns.com\" rel=\"nofollow\">chaussure
+    louboutin femme</a> <a href=\"http://www.caribbeanislandinns.com\" rel=\"nofollow\">chaussure
+    louboutin homme</a> <a href=\"http://www.focusandleap.com\" rel=\"nofollow\">cheap
+    christian louboutin shoes uk</a> <a href=\"http://www.focusandleap.com\" rel=\"nofollow\">cheap
+    louboutins</a> <a href=\"http://www.focusandleap.com\" rel=\"nofollow\">cheap
+    christian louboutin uk</a> <a href=\"http://www.focusandleap.com\" rel=\"nofollow\">christian
+    louboutin cheap</a> <a href=\"http://www.diemsandaihoc2011.com\" rel=\"nofollow\">christian
+    louboutin london</a> <a href=\"http://www.diemsandaihoc2011.com\" rel=\"nofollow\">christian
+    louboutin shop london</a> <a href=\"http://www.diemsandaihoc2011.com\" rel=\"nofollow\">louboutin
+    london</a> <a href=\"http://www.diemsandaihoc2011.com\" rel=\"nofollow\">louboutin
+    shop london</a> <a href=\"http://www.eabf.org\" rel=\"nofollow\">casques beats
+    pas cher</a> <a href=\"http://www.eabf.org\" rel=\"nofollow\">casque dr dre</a>
+    <a href=\"http://www.eabf.org\" rel=\"nofollow\">casque dr dre pas cher</a>\r\necouteurs
+    beats http://www.eabf.org"
+---
+<p>When given the choice between using an A DNS record or a CNAME DNS record for your SharePoint web applications, favor an A record particularly if you are using Kerberos authentication.&#160; Reference the following TechNet article:</p>
+<p><a title="http://technet.microsoft.com/en-us/library/gg502606.aspx" href="http://technet.microsoft.com/en-us/library/gg502606.aspx">http://technet.microsoft.com/en-us/library/gg502606.aspx</a></p>
+<p>Of particular interest in this article is the following passage:</p>
+<blockquote><h6>Kerberos authentication and DNS CNAMEs</h6>
+<p>There is a known issue with some Kerberos clients (Internet Explorer 7 and 8 included) that attempt to authenticate with Kerberos enabled services that are configured to resolve using DNS CNAMEs instead of A Records. The root of the problem is the client does not correctly form the SPN in the TGS request by creating it using the host name (A Record) instead of the alias name (CNAME). </p>
+<p>Example:</p>
+<p>A Record: wfe01.contoso.com</p>
+<p>CNAME: intranet.contoso.com (aliases wfe01.contoso.com)</p>
+<p>If the client attempts to authenticate with http://intranet.contoso.com, the client does not correctly form the SPN and requests a Kerberos ticket for http/wfe01.contoso.com instead of http/intranet.contoso.com </p>
+<p>Details regarding the issue can be found in the following articles:</p>
+<p><a href="http://support.microsoft.com/kb/911149/en-us">http://support.microsoft.com/kb/911149/en-us</a></p>
+<p><a href="http://support.microsoft.com/kb/938305/en-us">http://support.microsoft.com/kb/938305/en-us</a></p>
+<p>To work around this issue, configure Kerberos enabled services using DNS A records instead of CNAME aliases. The hotfix mentioned in KB article will correct this issue for Internet Explorer but will not correct the issue for the .NET framework (which is used by Microsoft Office SharePoint Server for web service communication).</p>
+</blockquote>
+<p>What me and my team experienced is that a customer had a customization which interfaced with Exchange.&#160; The browser authentication to the web application appeared to be working fine, but the double-hop to Exchange was failing with a 401 error.&#160; All SPNs appeared to be correct.&#160; We changed the DNS records from CNAME records to A records and the authentication began to work as expected.</p>

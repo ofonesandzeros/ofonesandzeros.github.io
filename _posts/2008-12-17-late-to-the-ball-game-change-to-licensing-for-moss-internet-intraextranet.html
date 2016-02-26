@@ -1,0 +1,32 @@
+---
+layout: post
+status: publish
+published: true
+title: 'Late to the ball-game: Change to licensing for MOSS Internet + Intra/Extranet'
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 100
+wordpress_url: http://blog.ofonesandzeros.com/2008/12/17/late-to-the-ball-game-change-to-licensing-for-moss-internet-intraextranet/
+date: '2008-12-17 22:29:18 -0500'
+date_gmt: '2008-12-18 02:29:18 -0500'
+categories:
+- SharePoint
+tags: []
+comments: []
+---
+</p>
+<p>I was preparing a response to an <a href="http://en.wikipedia.org/wiki/Request_for_Proposal">RFP</a> today for SharePoint that required Forms Services to be used for both anonymous Internet sites <strong>AND</strong> authenticated-user Intranet scenarios.&#160; When I first reviewed this requirement I thought, &quot;Oh snap!&#160; MOSS licensing doesn't permit mixing Internet and Intranet, this will need to be two farms!&quot;.&#160; I was dead certain of this.&#160; So certain, that I wanted to go straight to the <a href="http://office.microsoft.com/en-us/sharepointserver/HA101655351033.aspx?pid=CL100626951033#2">Microsoft Office SharePoint Server 2007 frequently asked questions</a> page and quote it in the response.&#160; This is when things took a turn.&#160; My world was flipped upside down.&#160; Dogs and cats, living together.&#160; Mass hysteria.&#160; The following is what I found:</p>
+<blockquote><p><a href="http://office.microsoft.com/"><img alt="Hide" src="http://office.microsoft.com/global/images/default.aspx?AssetID=ZA790050011033" border="0" />Can I mix SharePoint editions in the same farm?</a></p>
+<p>For Microsoft Office SharePoint Server and Microsoft Office SharePoint Server for Internet Sites, the use of a server determines its licensing requirements, not its location in one farm or another. Consequently, you can mix Microsoft Office SharePoint Server and Microsoft Office SharePoint Server for Internet Sites within the same farm--so long as the use cases are licensed appropriately. However, because Microsoft Office SharePoint Server 2007 for Internet Sites licenses the functionality of the Microsoft Office SharePoint Server Enterprise CAL, you will need to ensure that your users only access functionality they are licensed for based on their CALs.</p>
+<p>Microsoft Office Forms Server and Microsoft Office Forms Server for Internet Sites cannot be mixed with Microsoft Office SharePoint Server and Microsoft Office SharePoint Server for Internet Sites.</p>
+<p>Additionally, as an accommodation for various possible deployment scenarios, customers wishing to consolidate their SharePoint needs under a single deployment may acquire licenses for both Office SharePoint Sever and Office SharePoint Server for Internet Sites, assign those licenses to the same servers, and use the same running instances of the software simultaneously under both licenses. However, customers must acquire CALs as required under the Office SharePoint Server use rights for users and devices accessing content in any manner not permitted under the Office SharePoint Server for Internet sites use rights.</p>
+</blockquote>
+<p><strong>WHAT?!?!?!</strong>&#160; How could this be????&#160; I distinctly remember it stating that you could NOT mix Internet Sites with Enterprise or Standard.&#160; It was a cardinal rule!&#160; Break it at your own peril!&#160; Could I have been mistaken?&#160; <em>(Here's a hint, I'm never wrong.&#160; Ask my wife ;-))&#160; </em>I was distraught.&#160; I felt like I had been hoodwinked.&#160; So I did a quick search to see if the licensing terms had changed.&#160; For the sake of my sanity, thankfully I <a href="http://blogs.msdn.com/thomriz/archive/2007/09/23/changes-to-mossfis-licensing.aspx">found this blog post</a> regarding the change to the MOSS licensing.&#160; In it, Tom Rizzo states the following:</p>
+<blockquote><p>I'm happy to say that beginning Sept 1<sup>st</sup>, we made a change that makes running MOSS Server Licenses and MOSSFIS legal in the same farm. So, let the deploying begin! One thing to realize is that this does not reduce the number of licenses you need to buy. So, if you're running MOSS Server licenses and MOSSFIS on the same farm, you still need to buy both licenses as well as the correct number of client access licenses (CALs) for your internal users.</p>
+</blockquote>
+<p>Sweet vindication!&#160; Well.&#160; Sort of.&#160; I am writing this blog posting December 17th, 2008.&#160; Tom Rizzo wrote HIS blog post September 23rd, <strong>2007</strong>.&#160; Apparently I got this news roughly 15 months late.&#160; Ouch.&#160; </p>

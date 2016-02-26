@@ -1,0 +1,28 @@
+---
+layout: post
+status: publish
+published: true
+title: Couple &quot;Gotchas&quot; with Console Applications and SharePoint 2010
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 219
+wordpress_url: http://www.ofonesandzeros.com/?p=219
+date: '2011-07-12 21:32:13 -0400'
+date_gmt: '2011-07-13 01:32:13 -0400'
+categories:
+- Programming
+- SharePoint
+- Software Development
+tags:
+- SharePoint
+comments: []
+---
+<p>Wrote a console application today that synchronizes a SQL database with task information from a SharePoint farm as part of a task aggregation solution for a client.  Came across two small "issues" with Visual Studio 2010/SharePoint 2010 and console applications.  I am primarily writing this to remind myself later, but perhaps it will help someone else as well.</p>
+<p>First "gotcha":  Make sure you set the target .NET Framework to 3.5.  By default Visual Studio 2010 is going to select 4.0 and it will then do a bunch of complaining about not finding Microsoft.SharePoint.dll.  Yes, the compiler will give a pretty detailed error which may or may not reference the fact that you need to target 3.5, but it had me scratching my head for awhile so I figure its worth capturing.</p>
+<p>Second "gotcha":  You need to target x64 platform.  I was getting all kinds of crazy behavior when targeting x86.  When I would try to create SPSite objects I would get "FileNotFound".  If I would try to use SPWebService.Locate I would get permissions issues.  Switch the platform to x64 and everything started working like magic!</p>
+<p>That's it, hope this saves someone some time (preferably me on a later project ;-) ).</p>

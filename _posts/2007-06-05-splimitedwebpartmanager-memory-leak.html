@@ -1,0 +1,221 @@
+---
+layout: post
+status: publish
+published: true
+title: SPLimitedWebPartManager Memory Leak?
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 14
+wordpress_url: http://blog.ofonesandzeros.com/2007/06/05/splimitedwebpartmanager-memory-leak/
+date: '2007-06-05 15:24:26 -0400'
+date_gmt: '2007-06-05 19:24:26 -0400'
+categories:
+- SharePoint
+tags: []
+comments:
+- id: 2
+  author: Jason Fant
+  author_email: jason.fant@usi.net
+  author_url: ''
+  date: '2007-06-08 01:40:06 -0400'
+  date_gmt: '2007-06-08 05:40:06 -0400'
+  content: Interestingly enough, Tom Sallese and I attended a session at TechEd today
+    covering the WSS object model. One of the things that the speaker covered as a
+    little known "gotcha" was exactly what you are talking about. It appears that
+    we are going to have to be really careful when playing with the SharePoint's object
+    model. Good looking out B.
+- id: 3
+  author: Peter {faa780ce-0f0a-4c28-81d2-3667b71287fd}
+  author_email: peter@pseale.com
+  author_url: ''
+  date: '2007-09-28 15:15:20 -0400'
+  date_gmt: '2007-09-28 19:15:20 -0400'
+  content: Yes, this is exactly what I saw. It didn't surprise me at all when I got
+    my "outofmemoryexception"; I already had a healthy fear of SharePoint. :)
+- id: 4
+  author: Shai
+  author_email: Shai@kwizcom.com
+  author_url: http://www.kwizcom.com
+  date: '2007-10-24 07:07:59 -0400'
+  date_gmt: '2007-10-24 11:07:59 -0400'
+  content: |-
+    Hi,
+    I fail to understand why you feel that disposing of the web part manager should also dispose its owner web?
+
+    for instance, if you have code like this:
+    spweb w = .....
+    SPLimitedWebPartManager mgr = w.OpenFile("...").GetLimitedWebPartManager(...);
+    mgr.AddWebPart(...);
+    mgr.Dispose();
+
+    w.Title += " Done!";
+    w.Update();
+    w.Dispose();
+
+    See, I continue to work on the web object after disposing of the limited web part manager... It would be a bug if my w.TItle update will fail... no?
+- id: 5
+  author: admin
+  author_email: bryan.napier.md@gmail.com
+  author_url: http://
+  date: '2007-10-24 08:38:43 -0400'
+  date_gmt: '2007-10-24 12:38:43 -0400'
+  content: |-
+    The difference is that the web part manager is not using your w instance, it creates its own instance on the following line:
+
+    SPWeb web = this.Site.OpenWeb();
+
+    In your example you actually have 2 instances of SPWeb, you have your instance "w", and then there is an instance encapsulated in the web part manager "web".  The web part manager should dispose of the "web" instance, not your "w" instance.
+- id: 6
+  author: Incanna
+  author_email: korakao@ua.fm
+  author_url: http://Website(optional)
+  date: '2009-05-08 01:37:35 -0400'
+  date_gmt: '2009-05-08 05:37:35 -0400'
+  content: ehh. interesting..
+- id: 7
+  author: JessicaRich
+  author_email: jessicausa@gmail.com
+  author_url: http://Website(optional)
+  date: '2009-05-10 13:20:29 -0400'
+  date_gmt: '2009-05-10 17:20:29 -0400'
+  content: Thanks for posting, definitely going to subscribe! See you on my reader.
+- id: 8
+  author: ArianaSype
+  author_email: arianarbogdanova@gmail.com
+  author_url: http://Website(optional)
+  date: '2009-05-13 08:18:32 -0400'
+  date_gmt: '2009-05-13 12:18:32 -0400'
+  content: Wow! Thank you very much! I always wanted to write in my site something
+    like that
+- id: 9
+  author: Tudor Iliescu
+  author_email: mythcyrax@yahoo.com
+  author_url: ''
+  date: '2011-11-01 06:44:38 -0400'
+  date_gmt: '2011-11-01 10:44:38 -0400'
+  content: Very interesting! It the same in 2010?
+- id: 10
+  author: bryan
+  author_email: bryan.napier.md@gmail.com
+  author_url: http://
+  date: '2011-11-01 11:32:50 -0400'
+  date_gmt: '2011-11-01 15:32:50 -0400'
+  content: From what I've seen, yes.  I poked around in SPLimitedWebPartManager for
+    2010 and it still does not appear to close the SPWeb object that it opens up,
+    so I would recommend still explicitly closing it.  If anyone has seen differently
+    in 2010 let me know!
+- id: 11
+  author: Adrian Iurov
+  author_email: adrian_iurov@yahoo.com
+  author_url: ''
+  date: '2011-11-18 13:31:44 -0500'
+  date_gmt: '2011-11-18 13:31:44 -0500'
+  content: |-
+    From what I've seen in the code, this is NOT a memory leak in SP2010.
+
+    These 2 fields are part of the SPLimitedWebPartManager class:
+
+    SPWeb m_web;
+    SPWebPartManager m_manager;
+
+    When Dispose() is called on SPLimitedWebPartManager, inside it calls m_manager.Dispose() which calls m_web.Dipose()
+
+    The m_web of the SPWebPartManager instance references the same SPWeb instance as the m_web of the SPLimitedWebPartManager instance.
+
+    In order to see that the 2 fields reference the same SPWeb instance, take a look at the way this m_web is opened inside SPWeb.GetLimitedWebPartManagerInternal. Later on is assigned to the m_web of a SPWebPartCollectionInitialState instance and in the end to the newly created SPWebPartManager instance.
+
+    It's a bit hard to follow, but if you need more details about the entire flow, I could provide them to you.
+- id: 12
+  author: bryan
+  author_email: bryan.napier.md+blog@gmail.com
+  author_url: ''
+  date: '2011-11-18 13:45:00 -0500'
+  date_gmt: '2011-11-18 13:45:00 -0500'
+  content: |-
+    Ah, you're right Adrian!  When I looked earlier I just took a quick glance at Dispose() and noticed it still wasn't cleaning it up, but you're right, it's no longer creating the instance inside of SPLimitedWebPartManager, instead it's point to an instance created by SPWebPartManager, and SPWebPartManager cleans up the SPWeb object.
+
+    Thanks for the correction!
+---
+<p>Have a look at the following code segment:</p>
+<pre class="csharpcode"><span class="kwrd">while</span>(<span class="kwrd">true</span>)
+{
+    <span class="kwrd">using</span> (SPSite siteCollection =
+        <span class="kwrd">new</span> SPSite(<span class="str">"http://localhost"</span>))
+    <span class="kwrd">using</span> (SPWeb site =
+        siteCollection.OpenWeb(<span class="str">"/Marketing"</span>))
+    {
+        SPFolder pagesFolder = site.GetFolder(<span class="str">"Pages"</span>);
+
+        <span class="kwrd">foreach</span> (SPFile page <span class="kwrd">in</span> pagesFolder.Files)
+        {
+            WL(page.Url);
+
+            <span class="kwrd">using</span> (SPLimitedWebPartManager webPartManager =
+                page.GetLimitedWebPartManager
+                    (PersonalizationScope.Shared))
+            {
+            }
+        }
+    }
+}</pre>
+<p>With this code segment I'm just connecting to a site and iterating over the page collection, grabbing and instance of the page's SPLimitedWebPartManager as I go.  Since SPLimitedWebPartManager implements the IDisposable pattern I am being a good citizen and wrapping its instantiation in a using {} block.  The problem with this code segment is that this is what it does to the process memory:</p>
+<p><a href="http://www2.ofonesandzeros.com/wp-content/uploads/2007/06/image11.png" atomicselection="true"><img src="http://www2.ofonesandzeros.com/wp-content/uploads/2007/06/image-thumb11.png" style="border-width: 0px" alt="image" border="0" height="315" width="428" /></a></p>
+<p>Now, if I change the source code to this:</p>
+<pre class="csharpcode"><span class="kwrd">while</span>(<span class="kwrd">true</span>)
+{
+    <span class="kwrd">using</span> (SPSite siteCollection =
+        <span class="kwrd">new</span> SPSite(<span class="str">"http://localhost"</span>))
+    <span class="kwrd">using</span> (SPWeb site =
+        siteCollection.OpenWeb(<span class="str">"/Marketing"</span>))
+    {
+        SPFolder pagesFolder = site.GetFolder(<span class="str">"Pages"</span>);
+
+        <span class="kwrd">foreach</span> (SPFile page <span class="kwrd">in</span> pagesFolder.Files)
+        {
+            WL(page.Url);
+
+            <span class="kwrd">using</span> (SPLimitedWebPartManager webPartManager =
+                page.GetLimitedWebPartManager
+                    (PersonalizationScope.Shared))
+            {
+                webPartManager.Web.Dispose();
+            }
+        }
+    }
+}</pre>
+<p>The memory picture looks much different now:</p>
+<p><a href="/wp-content/image2.png" atomicselection="true"><img src="/wp-content/image-thumb2.png" style="border-width: 0px" alt="image" border="0" height="345" width="470" /></a></p>
+<p>The only difference being the addition of an explicit Dispose() within the webPartManager using.</p>
+<p>A look inside the SPFile.GetLimitedWebPartManager call reveals that it calls an internal GetLimitedWebPartManagerInternal() method on the SPFile SPWeb member variable.  A closer look at this method shows the following code:</p>
+<pre class="csharpcode">SPWeb web = <span class="kwrd">this</span>.Site.OpenWeb();
+<span class="kwrd">if</span> (<span class="kwrd">this</span>.AllowUnsafeUpdates)
+{
+    web.AllowUnsafeUpdates = <span class="kwrd">this</span>.AllowUnsafeUpdates;
+}
+SPWebPartManager manager = web.GetWebPartManagerInternal(pageUrl, requestedView, forRender, includeHidden, <span class="kwrd">out</span> bytes);</pre>
+<p>We see here that a new SPWeb object is getting spun up, and in the call to GetWebPartManagerInternal an assignment is going to be made to the SPLimitedWebPartManager m_web member variable.  If we look at the Dispose() implementation for SPLimitedWebPartManager, we see the following:</p>
+<pre class="csharpcode"><span class="kwrd">public</span> <span class="kwrd">void</span> Dispose()
+{
+    <span class="kwrd">if</span> (!<span class="kwrd">this</span>.m_disposed)
+    {
+        <span class="kwrd">if</span> (<span class="kwrd">this</span>.m_manager != <span class="kwrd">null</span>)
+        {
+            <span class="kwrd">this</span>.m_manager.Dispose();
+        }
+    }
+    <span class="kwrd">else</span>
+    {
+        <span class="kwrd">return</span>;
+    }
+    <span class="kwrd">this</span>.m_webParts = <span class="kwrd">null</span>;
+    <span class="kwrd">this</span>.m_manager = <span class="kwrd">null</span>;
+    <span class="kwrd">this</span>.m_disposed = <span class="kwrd">true</span>;
+}</pre>
+<p>Nothing is being done to dispose of the m_web!  If I explicitly dispose of m_web, then memory stays low.</p>
+<p>Is anyone encountering the same?</p>
+<style type="text/css">.csharpcode, .csharpcode pre { 	font-size: small; 	color: black; 	font-family: consolas, "Courier New", courier, monospace; 	background-color: #ffffff; 	/*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt  { 	background-color: #f4f4f4; 	width: 100%; 	margin: 0em; } .csharpcode .lnum { color: #606060; } </style>

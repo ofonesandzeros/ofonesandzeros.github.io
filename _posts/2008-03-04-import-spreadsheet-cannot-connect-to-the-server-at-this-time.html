@@ -1,0 +1,38 @@
+---
+layout: post
+status: publish
+published: true
+title: Import Spreadsheet - &quot;Cannot connect to the server at this time.&quot;
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 45
+wordpress_url: http://blog.ofonesandzeros.com/2008/03/04/import-spreadsheet-cannot-connect-to-the-server-at-this-time/
+date: '2008-03-04 11:31:32 -0500'
+date_gmt: '2008-03-04 15:31:32 -0500'
+categories:
+- SharePoint
+tags: []
+comments:
+- id: 16
+  author: AutoSponge
+  author_email: autosponge@hotmail.com
+  author_url: http://autosponge.spaces.live.com
+  date: '2008-03-04 13:33:38 -0500'
+  date_gmt: '2008-03-04 17:33:38 -0500'
+  content: |-
+    To use excel's web services for Excel 2007, you may have to repair a built-in macro.  Article here:
+
+    http://autosponge.spaces.live.com/blog/cns!D7F85948C20F0293!230.entry
+---
+<p>Ran into an issue today with trying to import an Excel 2003 spreadsheet into a SharePoint list.&#160; SharePoint would load Excel, then you select the cells in Excel that you want to import, you click Import and Excel responds with &quot;Cannot connect to the server at this time.&quot;&#160; After a long while searching for a solution, I came across the following link: </p>
+<p><a href="http://wss.asaris.de/sites/walsh/Lists/WSS%20FAQ/DispForm.aspx?ID=188&amp;Source=http%3A%2F%2Fwss%2Easaris%2Ede%2Fsites%2Fwalsh%2FLists%2FWSS%2520FAQ%2FIII%2520Administration%2Easpx">WSS FAQ - I cannot import from Excel 2003 to WSS. What's...</a> </p>
+<p>Basically the solution was 2 workarounds:</p>
+<p>a.) Import the spreadsheet into a root site, then create a list template and use that to create the list within a subsite.</p>
+<p>or</p>
+<p>b.) Use Excel's List Publishing feature to publish directly to the subsite.</p>
+<p>I tested both options and they each worked equally well, I ultimately went with option B as it seemed a cleaner solution.</p>

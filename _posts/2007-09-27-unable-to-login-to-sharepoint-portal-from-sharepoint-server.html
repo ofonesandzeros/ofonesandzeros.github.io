@@ -1,0 +1,32 @@
+---
+layout: post
+status: publish
+published: true
+title: Unable to login to SharePoint Portal from SharePoint Server
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 37
+wordpress_url: http://blog.ofonesandzeros.com/2007/09/27/unable-to-login-to-sharepoint-portal-from-sharepoint-server/
+date: '2007-09-27 15:09:58 -0400'
+date_gmt: '2007-09-27 19:09:58 -0400'
+categories:
+- SharePoint
+tags: []
+comments:
+- id: 13
+  author: Idetrorce
+  author_email: idetrorce@mymail-in.net
+  author_url: ''
+  date: '2007-12-15 20:35:34 -0500'
+  date_gmt: '2007-12-16 00:35:34 -0500'
+  content: |-
+    very interesting, but I don't agree with you
+    Idetrorce
+---
+<p>One of our SharePoint servers at work was updated with the most recent round of security patches the other day.&nbsp; Unfortunately, the result of this update was the inability to login to the SharePoint Portal from the server, and the search crawler not being able to access the site.</p>
+<p>After some significant research on the matter I came across <a title="http://support.microsoft.com/kb/896861" href="http://support.microsoft.com/kb/896861">http://support.microsoft.com/kb/896861</a>&nbsp;which indicates that an IIS website that is using Integrated Windows Authentication and the URL is different from the computer name, will result in a 401.1 error.&nbsp; The fix is to add the other names of the computer into a registry key and restart IIS.&nbsp; After following the instructions in the knowledge base article I was able to login to the site from the server, and the search crawler was once again able to crawl the content.</p>

@@ -1,0 +1,59 @@
+---
+layout: post
+status: publish
+published: true
+title: Migrating Subsites to New Site Collections
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 178
+wordpress_url: http://www.ofonesandzeros.com/2009/09/23/migrating-subsites-to-new-site-collections/
+date: '2009-09-23 09:57:38 -0400'
+date_gmt: '2009-09-23 13:57:38 -0400'
+categories:
+- SharePoint
+tags: []
+comments:
+- id: 45
+  author: Nee Okai
+  author_email: nee2ok@yahoo.com
+  author_url: ''
+  date: '2011-02-15 16:10:29 -0500'
+  date_gmt: '2011-02-15 20:10:29 -0500'
+  content: |-
+    Hi Bryan,
+    I am in the process to doing a similar project like yours. I am faced with a single farm and a single site collection that contain more than 3000 subsites sitting on about 10.5 TB of content database. I would like to split this site collection and promote each subsite to a new site collection as the top site. I need to get this done before migrating to SharePoint 2010. I would be very grateful if you have step-by-step procedure to share with me.
+
+    Thanks,
+    Nee
+- id: 46
+  author: Minesh
+  author_email: trustminesh@gmail.com
+  author_url: ''
+  date: '2012-08-20 16:27:42 -0400'
+  date_gmt: '2012-08-20 16:27:42 -0400'
+  content: |-
+    I have site collection about 173 GB. I want to split this site collection.
+
+    Can you suggest me some plan for doing that ?
+---
+<p>I am currently working on a project to split up a single site collection to multiple site collections.&#160; There are multiple reasons for doing so, and there are useful <a href="http://blogs.msdn.com/sgoodyear/archive/2009/07/25/determining-between-sharepoint-site-collections-and-sub-sites.aspx">blog posts</a> dedicated to the topic of whether to use multiple site collections or subsites.&#160; In this instance, the primary driver for using multiple site collections is to get the desired scoping functionality the customer would like for <a href="http://www.nintex.com/en-US/Products/Pages/NintexReporting2008.aspx">Nintex Reporting 2008</a>. </p>
+<p>Tackling the job of migrating from subsites to new site collections is no trivial task.&#160; There are however, some COTS products specifically tailored to this case:</p>
+<ul>
+<li><a href="http://www.metalogix.net/Products/SharePoint-Site-Migration-Manager/">Metalogix Site Migration Manager</a></li>
+<li><a href="http://www.quest.com/migration-manager-for-sharepoint/">Quest Software Migration Manager for SharePoint</a></li>
+</ul>
+<p>Unfortunately, I did not have the luxury of using one of these purpose-built tools for this endeavor.&#160; Instead, I have relied on Gary Lapointe’s fantastic <a href="http://stsadm.blogspot.com/2007/08/stsadm-commands_09.html">stsadm extensions</a>.&#160; Specifically, the following:</p>
+<ul>
+<li>gl-convertsubsitetositecollection – this one does all of the heavy lifting, using the SharePoint Content Migration API.</li>
+<li>gl-replacewebpartcontent – this allows you to use regex patterns to search and replace links that are in content editor web parts</li>
+<li>gl-copynavigation – because the new site collections create their own global navigation, I set the global navigation of the root (/) site collection to be all manual links, and use this extension operation to copy that navigation to the new site collection</li>
+<li>gl-addsiteadmin – add site collection administrators to the site collections easily</li>
+</ul>
+<p>These commands have been grouped into a batch file which will handle each step of the migration process.&#160; This has worked pretty well.&#160; The batch file is executed through a Scheduled Task as the process often can exceed 24 hours in runtime so executing through RDP is not an option.&#160; </p>
+<p>The last utility I have made use of for this effort is <a href="http://www.beyondlogic.org/solutions/cmdlinemail/cmdlinemail.htm">bmail from Beyond Logic</a>.&#160; This is a simple command-line SMTP mailer which is used at the end of the conversion batch file to notify me that the process is complete.&#160; This saves me the trouble of having to login to the server several times a day to check on progress.</p>
+<p>Have I missed any utilities that you find useful for similar work?&#160; If so, please comment!</p>

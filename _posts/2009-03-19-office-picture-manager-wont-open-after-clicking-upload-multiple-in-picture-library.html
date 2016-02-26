@@ -1,0 +1,148 @@
+---
+layout: post
+status: publish
+published: true
+title: Office Picture Manager won’t open after clicking &quot;Upload Multiple&quot;
+  in Picture Library
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 102
+wordpress_url: http://blog.ofonesandzeros.com/2009/03/19/office-picture-manager-wont-open-after-clicking-upload-multiple-in-picture-library/
+date: '2009-03-19 18:49:12 -0400'
+date_gmt: '2009-03-19 22:49:12 -0400'
+categories:
+- SharePoint
+tags: []
+comments:
+- id: 27
+  author: charlie
+  author_email: charlie@im-design.net
+  author_url: ''
+  date: '2009-03-25 10:26:51 -0400'
+  date_gmt: '2009-03-25 14:26:51 -0400'
+  content: |-
+    I have been having this problem for months.
+
+    Does the office picture manager return to functionality after you unregister oisctrl.dll?
+
+    TIA
+- id: 28
+  author: bryan
+  author_email: bryan.napier.md@gmail.com
+  author_url: http://
+  date: '2009-03-25 10:32:04 -0400'
+  date_gmt: '2009-03-25 14:32:04 -0400'
+  content: '@Charlie - Unfortunately the Office Picture Manager does not launch, instead
+    you see the "normal" upload multiple control, which is the one with the tree view
+    on the left and the explorer view on the right.  I have not been able to successfully
+    bring the Office Picture Manager back to life, but at least am able to use this
+    as a workaround in the meantime.  If you come across a full-scale solution, please
+    share!'
+- id: 29
+  author: joey
+  author_email: joseph.vano@gmail.com
+  author_url: http://weblogs.asp.net/jvano
+  date: '2009-06-03 15:10:02 -0400'
+  date_gmt: '2009-06-03 19:10:02 -0400'
+  content: |-
+    Had same problem, fixed by running Microsoft Office Diagnostics Tool.  It's under START -&gt; Programs -&gt; Microsoft Office -&gt; Microsoft Office Tools -&gt; Microsoft Office Diagnostics.
+
+    It takes about 5 mins to run, depending upon your machine.  Should say 1 or more errors fixed.
+- id: 30
+  author: bryan
+  author_email: bryan.napier.md@gmail.com
+  author_url: http://
+  date: '2009-06-03 15:48:29 -0400'
+  date_gmt: '2009-06-03 19:48:29 -0400'
+  content: Thanks for the tip, I'll give that a shot!
+- id: 31
+  author: James
+  author_email: james.mcfarland@wolverhamptoncyp.org.uk
+  author_url: ''
+  date: '2009-06-29 11:10:38 -0400'
+  date_gmt: '2009-06-29 15:10:38 -0400'
+  content: This works a treat on Office 2007 machines. Thanks! Any ideas how to do
+    the same on Office 2003 machines? I've tried "detect and repair" which is the
+    equivalent of Office 2007 diagnostics but to no avail.
+- id: 32
+  author: abney317
+  author_email: abney317@gmail.com
+  author_url: http://infinitystyle.com
+  date: '2010-06-29 17:01:33 -0400'
+  date_gmt: '2010-06-29 21:01:33 -0400'
+  content: any ideas on this problem for sharepoint 2010?
+- id: 33
+  author: bryan
+  author_email: bryan.napier.md@gmail.com
+  author_url: http://
+  date: '2010-06-30 07:06:00 -0400'
+  date_gmt: '2010-06-30 11:06:00 -0400'
+  content: Unfortunately I haven't run across this for sp2010 yet. If/when I do I
+    will be sure to update this post.
+- id: 220
+  author: Kevin
+  author_email: kevin@genesis-is.com
+  author_url: ''
+  date: '2013-01-28 19:19:16 -0500'
+  date_gmt: '2013-01-28 19:19:16 -0500'
+  content: DId you ever get anything else on this subject?  I tried your work around
+    and I'm able to upload multiple files now using drag and drop but it is PAINFULLY
+    slow.
+- id: 221
+  author: bryan
+  author_email: bryan.napier.md@gmail.com
+  author_url: ''
+  date: '2013-01-29 01:46:12 -0500'
+  date_gmt: '2013-01-29 01:46:12 -0500'
+  content: Sorry Kevin, wish I had an update!
+- id: 25149
+  author: Jo Anne Roberts
+  author_email: joroberts60@yahoo.com
+  author_url: ''
+  date: '2015-03-29 00:52:39 -0400'
+  date_gmt: '2015-03-29 00:52:39 -0400'
+  content: Hi there Bryan, Im not real pc savvy but, I can hold my own some of the
+    time .  Im looking to join a site where I might be able to find help once in a
+    while.  MS community is ok but, some times the help there refuses to talk in laymens
+    terms for  PC for DUMMIES..LOL  any way, Im going to register and I may be back
+    for help real soon. Im having video hardware graphics trouble a windows error
+    report and they don't have a solution.  check with you later Bryan.
+---
+<p>There's a title for you!&#160; In any event, a client ha an issue where after clicking &quot;Upload Multiple&quot; in a SharePoint Picture Library, the Microsoft Office Picture Manager would not load.&#160; After digging through the page source, it was determined that SharePoint uses the &quot;OISCTRL.OISClientLauncher&quot; class from the &quot;OISCTRL.dll&quot; to power the Upload Multiple functionality in Picture Libraries.&#160; I wrote the following script to test the functionality of this component on the client machine:</p>
+<div class="csharpcode">
+<pre class="alt"><span class="lnum">   1:  </span><span class="kwrd">Set</span> o = CreateObject(<span class="str">&quot;OISCTRL.OISClientLauncher&quot;</span>)</pre>
+<pre><span class="lnum">   2:  </span>o.LaunchOIS <span class="str">&quot;ois.exe /upload &quot;</span><span class="str">&quot;http://sharepointpicturelibraryurl.com&quot;</span><span class="str">&quot;&quot;</span></pre>
+</div>
+<style type="text/css">
+<p>.csharpcode, .csharpcode pre<br />
+{<br />
+	font-size: small;<br />
+	color: black;<br />
+	font-family: consolas, "Courier New", courier, monospace;<br />
+	background-color: #ffffff;<br />
+	/*white-space: pre;*/<br />
+}<br />
+.csharpcode pre { margin: 0em; }<br />
+.csharpcode .rem { color: #008000; }<br />
+.csharpcode .kwrd { color: #0000ff; }<br />
+.csharpcode .str { color: #006080; }<br />
+.csharpcode .op { color: #0000c0; }<br />
+.csharpcode .preproc { color: #cc6633; }<br />
+.csharpcode .asp { background-color: #ffff00; }<br />
+.csharpcode .html { color: #800000; }<br />
+.csharpcode .attr { color: #ff0000; }<br />
+.csharpcode .alt<br />
+{<br />
+	background-color: #f4f4f4;<br />
+	width: 100%;<br />
+	margin: 0em;<br />
+}<br />
+.csharpcode .lnum { color: #606060; }</style></p>
+<p>The result was &quot;Unspecified error&quot;.&#160; A further review of the SharePoint javascript indicated that it first looks for &quot;OISCTRL.OISClientLauncher&quot; but if it doesn't find it, it will fall back to good 'ole &quot;STSUPLD.DLL&quot; which powers the standard upload multiple functionality.&#160; For now, we have worked around the issue by unregistering &quot;OISCTRL.dll&quot; which is in the C:Program FilesMicrosoft OfficeOFFICE12 directory:</p>
+<pre class="csharpcode">regsvr32 /u OISCTRL.dll</pre>
+<p>If anyone has an actual fix for OISCTRL.dll not being able to launch the ois.exe process, let me know!</p>

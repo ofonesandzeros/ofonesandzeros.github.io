@@ -1,0 +1,30 @@
+---
+layout: post
+status: publish
+published: true
+title: Error when deleting list columns in SharePoint
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 108
+wordpress_url: http://blog.ofonesandzeros.com/2009/04/28/error-when-deleting-list-columns-in-sharepoint/
+date: '2009-04-28 13:13:43 -0400'
+date_gmt: '2009-04-28 17:13:43 -0400'
+categories:
+- SharePoint
+tags: []
+comments: []
+---
+<p>Received the following error when trying to delete a list column:&#160; </p>
+<p>“Unable to validate data.”</p>
+<p><a href="http://www2.ofonesandzeros.com/wp-content/uploads/2009/04/croppercapture11.png" rel="lightbox"><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="CropperCapture[1]" border="0" alt="CropperCapture[1]" src="http://www2.ofonesandzeros.com/wp-content/uploads/2009/04/croppercapture1-thumb1.png" width="519" height="119" /></a> </p>
+<p>Thanks to <a href="http://roadburn.audioreload.com/">Angela Chng</a> for <a href="http://roadburn.audioreload.com/2008/12/03/sharepoint-2007-unknown-error-when-deleting-list-columns/">the solution:</a></p>
+<blockquote><p>Did you customize your application master pages and get this error while trying to delete list columns? </p>
+<p>Unable to validate data. at System.Web.Configuration.MachineKeySection.GetDecodedData(Byte[] buf, Byte[] modifier, Int32 start, Int32 length, Int32&amp; dataLength)&#160;&#160; <br />at System.Web.UI.ObjectStateFormatter.Deserialize(String inputString)&#160; </p>
+<p>Ok that probably means you have a search box in the template which is messing things up, just remove it or hide it, and that will do the trick!</p>
+</blockquote>
+<p>Removed the search box from the application.master and the issue was resolved!</p>

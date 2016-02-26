@@ -1,0 +1,99 @@
+---
+layout: post
+status: publish
+published: true
+title: Setting up Sitefinity to forward old Urls to new Urls
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 105
+wordpress_url: http://blog.ofonesandzeros.com/2009/04/27/setting-up-sitefinity-to-forward-old-urls-to-new-urls/
+date: '2009-04-27 14:32:24 -0400'
+date_gmt: '2009-04-27 18:32:24 -0400'
+categories:
+- Sitefinity
+tags: []
+comments:
+- id: 35
+  author: Harsh Patel
+  author_email: ''
+  author_url: ''
+  date: '2009-04-27 21:13:26 -0400'
+  date_gmt: '2009-04-28 01:13:26 -0400'
+  content: Good article thanks for sharing.
+- id: 15395
+  author: Kristopher
+  author_email: cindibinette@googlemail.com
+  author_url: http://Nestor.skyrock.com
+  date: '2014-09-18 16:45:40 -0400'
+  date_gmt: '2014-09-18 16:45:40 -0400'
+  content: "Finally i quit my day job, now i earn a lot of money online you \r\nshould
+    try too, just type in google - blackhand roulette system"
+---
+<p>My colleague Adam Duggan pointed me to an incredible useful post on the Sitefinity support forums: <a title="http://www.sitefinity.com/support/forums/support-forum-thread/b1043S-bhamhe.aspx" href="http://www.sitefinity.com/support/forums/support-forum-thread/b1043S-bhamhe.aspx">http://www.sitefinity.com/support/forums/support-forum-thread/b1043S-bhamhe.aspx</a>.  I mistakenly believed that Sitefinity would support redirecting .ASP files to the new .ASPX counterparts as long as IIS had the .ASP extension associated with the aspnet_isapi.dll runtime.  WRONG!  As indicated in the forum posting by Randy, the following steps are required:</p>
+<blockquote><p><strong>Step 1: Configure IIS</strong><br />
+What happens if you request a non-existent HTM,ASP page?<br />
+By default you will get a canned "white page". When you install the .NET Framework is maps certain file extensions to the ASP.NET ISAPI, aspnet_isapi.dll. Neither HTML nor HTM files are mapped to it (because they are not ASP.NET pages). However, you can configure IIS to treat them as ASP.NET pages and serve our custom error pages.<br />
+Run the IIS Manager<br />
+Select a web application<br />
+Right click and go to Properties<br />
+On the Virtual Directory tab click Configuration<br />
+In the Extension column find .aspx, double click and copy the full path to aspnet_isapi.dll. It should be something like C:WINDOWSMicrosoft.NETFrameworkv2.0.50727aspnet_isapi.dll<br />
+Click Add and paste the path in the Executable box<br />
+In the Extension box type .html<br />
+Make sure Check that file exists is NOT checked<br />
+Dismiss all dialogs<br />
+<strong>Step 2: Modify Web.Config<br />
+</strong><br />
+Add as many types as you want into the httphnadler section of your web.config.<br />
+[sourcecode language='Xml']<br />
+<httpHandlers><br />
+<add path="*.htm" verb="*" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" validate="false"/><br />
+<add path="*.html" verb="*" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" validate="false"/><br />
+<add path="*.asp" verb="*" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" validate="false"/><br />
+</httpHandlers><br />
+[/sourcecode]<br />
+<!-- .csharpcode, .csharpcode pre { 	font-size: small; 	color: black; 	font-family: consolas, "Courier New", courier, monospace; 	background-color: #ffffff; 	/*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt { 	background-color: #f4f4f4; 	width: 100%; 	margin: 0em; } .csharpcode .lnum { color: #606060; } --><strong>Step 3:  Set Default Page Properties</strong></p>
+<ul>
+<li>Open Sitefinity Admin</li>
+<li>Open the Contact.aspx file.</li>
+<li>Click Properties</li>
+<li>Expand More Options</li>
+<li>Add another URL (~/Contact.htm)</li>
+<li>Check the “Redriect to Default URL” box</li>
+<li>Save Changes.</li>
+</ul>
+<p><strong>Step 4: Write code using Telerik API</strong></p>
+<p>Add this bit of code to your global.asax<br />
+[sourcecode language="c#"]</p>
+<p>void Application_Error(object sender, EventArgs e)<br />
+{<br />
+Exception lastException = this.Server.GetLastError();<br />
+if (lastException is HttpException)<br />
+{<br />
+HttpException httpException = (HttpException)lastException;<br />
+if (httpException.GetHttpCode() == 404)<br />
+{<br />
+// get the name of the requested page - just the /thisPage.htm or /DIR/thisPage.asp etc<br />
+string pageName = string.Concat("~", Request.Url.AbsolutePath.ToString());<br />
+// create a new instance of CmsManager<br />
+Telerik.Cms.CmsManager cmsManager = new Telerik.Cms.CmsManager();<br />
+// let’s get the page by passing one of it’s additional url’s<br />
+Telerik.Cms.IPage myPage = cmsManager.GetPageByAdditionalUrl(pageName);<br />
+// we can cast myPage as ICmsPage and redirect to the Default URL<br />
+if (myPage != null)<br />
+{<br />
+Response.Redirect(((Telerik.Cms.ICmsPage)myPage).DefaultUrl.Url);<br />
+this.Server.ClearError();<br />
+}<br />
+}<br />
+}<br />
+}</p>
+<p>[/sourcecode]<br />
+<!-- .csharpcode, .csharpcode pre { 	font-size: small; 	color: black; 	font-family: consolas, "Courier New", courier, monospace; 	background-color: #ffffff; 	/*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt { 	background-color: #f4f4f4; 	width: 100%; 	margin: 0em; } .csharpcode .lnum { color: #606060; } -->Now if you come to the site with contact.htm and it doesn’t exist, you will be redirected to contact.aspx.</p>
+<p>I hope this helps</p></blockquote>
+<p>A huge thank-you to Randy for not only figuring this out, but posting the results!</p>

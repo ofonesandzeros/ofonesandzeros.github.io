@@ -1,0 +1,22 @@
+---
+layout: post
+status: publish
+published: true
+title: SQL 2005 Maintenance Plans and SharePoint
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 33
+wordpress_url: http://blog.ofonesandzeros.com/2007/09/11/sql-2005-maintenance-plans-and-sharepoint/
+date: '2007-09-11 09:09:52 -0400'
+date_gmt: '2007-09-11 13:09:52 -0400'
+categories:
+- SharePoint
+tags: []
+comments: []
+---
+<p>If you are using SPS 2003 or MOSS 2007 with a SQL Server 2005 box that does not have SP2 installed, you may discover that your crawls never complete.&nbsp; There is a bug in SQL 2005 that if you have a Reindex Maintenance Plan it clears some attributes of the SharePoint indexes when it reindexes which in turn breaks the search functionality of SharePoint.&nbsp; Long story short, consider SP2 for SQL 2005 to be a system requirement of SharePoint.&nbsp; More information available here:&nbsp; <a title="http://support.microsoft.com/kb/930887" href="http://support.microsoft.com/kb/930887">http://support.microsoft.com/kb/930887</a></p>

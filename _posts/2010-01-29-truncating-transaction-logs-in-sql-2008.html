@@ -1,0 +1,149 @@
+---
+layout: post
+status: publish
+published: true
+title: Truncating Transaction Logs in SQL 2008
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 182
+wordpress_url: http://www.ofonesandzeros.com/?p=182
+date: '2010-01-29 11:45:20 -0500'
+date_gmt: '2010-01-29 15:45:20 -0500'
+categories:
+- SQL
+tags: []
+comments:
+- id: 47
+  author: Zehra Nasif
+  author_email: zehra.nasif@gmail.com
+  author_url: ''
+  date: '2011-01-27 18:33:24 -0500'
+  date_gmt: '2011-01-27 22:33:24 -0500'
+  content: Thank you so much; saved a lot of time and headache when I needed this
+    script right away.
+- id: 48
+  author: bryan
+  author_email: bryan.napier.md@gmail.com
+  author_url: http://
+  date: '2011-01-27 20:55:49 -0500'
+  date_gmt: '2011-01-28 00:55:49 -0500'
+  content: Glad it was of use to you!
+- id: 49
+  author: Bernhard Marx
+  author_email: bernhard.marx@gmail.com
+  author_url: ''
+  date: '2011-03-12 04:07:13 -0500'
+  date_gmt: '2011-03-12 08:07:13 -0500'
+  content: Thanks a lot. This saved my "life"
+- id: 50
+  author: Dileep
+  author_email: dileep.tamuk@gmail.com
+  author_url: ''
+  date: '2011-06-22 22:18:10 -0400'
+  date_gmt: '2011-06-23 02:18:10 -0400'
+  content: That was seriously good.
+- id: 51
+  author: juanMa
+  author_email: juan.font@gmail.com
+  author_url: ''
+  date: '2011-06-24 15:06:07 -0400'
+  date_gmt: '2011-06-24 19:06:07 -0400'
+  content: |-
+    Have you tried using the built in function quotename() for T-SQL?
+    It returns the input string a valid SQL Server delimited identifier. ie, with [ ]
+
+    Very useful script.
+- id: 52
+  author: juanMa
+  author_email: juan.font@gmail.com
+  author_url: http://www.facebook.com/messagetovenus
+  date: '2011-06-24 16:31:45 -0400'
+  date_gmt: '2011-06-24 20:31:45 -0400'
+  content: "Hey Bryan, here is my version I was working on when I stumbled upon your
+    version (wasn't sure how to get the log names).  It's made for sql server 2005.
+    \ Also I don't like cursors so they're not here.\n------------------------------------------\ndeclare
+    @SQLString NVARCHAR(MAX), @dbName as nvarchar(255), @logName as nvarchar(255)\ndeclare
+    @dbList as table( dbName nvarchar(255),logName nvarchar(255), runStatus bit default
+    0)\n\n--Populate table variable with all db names and all db log file names\ninsert
+    into @dbList (dbName,logName)\nSELECT a.name, b.name from sys.databases a join
+    sys.master_files b on a.database_id = b.database_id\nwhere b.type = 1 AND a.name
+    not in ('master', 'model', 'msdb', 'tempdb','distribution')\norder by a.name\n--Loop
+    over all db\nwhile (exists(select * from @dbList where runStatus=0))\nbegin\n\t--Get
+    first available database\n\tSELECT top 1  @dbName = dbName, @logName = logName
+    from @dbList where runStatus = 0\n\t--Prepare sql statement here\n\tSET @SQLString
+    =\n\t\tN' USE ' + quotename(@dbName) + N' ; ' +\n\t\tN' DBCC SHRINKFILE(' + quotename(@logName)
+    + ' , 1) ; ' +\n\t\tN' BACKUP LOG ' + quotename(@dbName) +' WITH TRUNCATE_ONLY
+    ;' +\n\t\tN' DBCC SHRINKFILE(' + quotename(@logName) + ' , 1) ;'\n\t--Execute\n\tEXECUTE
+    sp_executesql @SQLString\n\t--Flag used database\n\tupdate @dbList set runStatus
+    = 1 where dbName = @dbName\nend"
+- id: 53
+  author: Pare
+  author_email: parezoid@mail.com
+  author_url: ''
+  date: '2011-08-28 02:04:50 -0400'
+  date_gmt: '2011-08-28 06:04:50 -0400'
+  content: Great Man, thx
+- id: 54
+  author: MM
+  author_email: mm@mm.com
+  author_url: ''
+  date: '2011-09-08 23:06:19 -0400'
+  date_gmt: '2011-09-09 03:06:19 -0400'
+  content: |-
+    Thank you so much.........
+    you made my day...
+---
+<p>One of my clients is beginning to migrate to SQL 2008 for their SharePoint farms.&#160; In the past, we have used scripts to truncate the transaction logs and shrink the DBs in the non-production environments using the “BACKUP LOG [dbname] WITH TRUNCATE_ONLY” command.&#160; As you may be aware, the “WITH TRUNCATE_ONLY” option has been deprecated in SQL 2008.&#160; In SQL 2008 instead you need to change the recovery mode of the database to SIMPLE and then back to FULL in order to truncate the log (or perform a backup of the log of course).&#160; In production environments obviously backing up the transaction log often is the best strategy, however in non-production environments that isn’t always feasible.&#160; I wrote the following script for this client to truncate the log all databases other than the system ones.&#160; </p>
+<p>Enjoy!</p>
+<p>[sourcecode language="sql"]<br />
+DECLARE @DatabaseNames TABLE<br />
+(<br />
+	name varchar(255)<br />
+)</p>
+<p>INSERT INTO @DatabaseNames<br />
+SELECT name FROM sys.databases WHERE<br />
+name NOT IN ( 'master', 'model', 'msdb', 'tempdb' )</p>
+<p>DECLARE DatabaseCursor CURSOR FOR<br />
+SELECT * FROM @DatabaseNames</p>
+<p>OPEN DatabaseCursor</p>
+<p>DECLARE @DatabaseName varchar(255)<br />
+DECLARE @LogFileName varchar(255)<br />
+DECLARE @SqlStatement varchar(2000)</p>
+<p>FETCH NEXT FROM DatabaseCursor INTO @DatabaseName</p>
+<p>WHILE @@FETCH_STATUS=0<br />
+BEGIN<br />
+	PRINT '----------------------------------------------------------'<br />
+	PRINT 'Processing database ' + @DatabaseName<br />
+	PRINT '----------------------------------------------------------'</p>
+<p>	SET @SqlStatement = 'ALTER DATABASE [' + @DatabaseName +<br />
+		'] SET RECOVERY SIMPLE'</p>
+<p>	PRINT @SqlStatement<br />
+	EXEC (@SqlStatement)</p>
+<p>	SET @LogFileName =<br />
+		(<br />
+			SELECT b.name<br />
+			FROM sys.databases a<br />
+			INNER JOIN sys.master_files b ON<br />
+				a.database_id = b.database_id<br />
+			WHERE<br />
+				a.name = @DatabaseName<br />
+				AND b.name LIKE '%log')</p>
+<p>	PRINT @LogFileName</p>
+<p>	SET @SqlStatement = 'USE [' + @DatabaseName +<br />
+		'] DBCC SHRINKFILE(N''' + @LogFileName + ''', 1)'</p>
+<p>	PRINT @SqlStatement<br />
+	EXEC (@SqlStatement)</p>
+<p>	SET @SqlStatement = 'ALTER DATABASE [' + @DatabaseName +<br />
+		'] SET RECOVERY FULL'</p>
+<p>	PRINT @SqlStatement<br />
+	EXEC (@SqlStatement)</p>
+<p>	FETCH NEXT FROM DatabaseCursor INTO @DatabaseName<br />
+END</p>
+<p>CLOSE DatabaseCursor<br />
+DEALLOCATE DatabaseCursor<br />
+[/sourcecode] </p>

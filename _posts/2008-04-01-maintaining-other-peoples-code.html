@@ -1,0 +1,29 @@
+---
+layout: post
+status: publish
+published: true
+title: Maintaining Other People’s Code
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 59
+wordpress_url: http://blog.ofonesandzeros.com/2008/04/01/maintaining-other-peoples-code/
+date: '2008-04-01 13:43:12 -0400'
+date_gmt: '2008-04-01 17:43:12 -0400'
+categories:
+- Software Development
+tags: []
+comments: []
+---
+<p>I have taken over maintenance of other people's code in the past, and its generally a mixed-bag.  Sometimes you inherit a plate of spaghetti, sometimes you luck-out and actually get a well architected and implemented codebase.  The real payoff when inheriting maintenance though, is to read the fantastic comments left behind, such as this gem I unearthed today:</p>
+<blockquote>
+<pre class="csharpcode"><span class="rem">// if it's a number we should sort it descending because it is probably a date</span>
+<span class="rem">// bad? no, this is AWESOME!!!! Regular expressions are for assholes.</span>
+<span class="kwrd">int</span>.Parse(f.SubFolders[0].Name);
+dv2 = <span class="kwrd">this</span>.GetFolderViewSorted(f, <span class="str">"DESC"</span>);</pre>
+</blockquote>
+<style type="text/css"> .csharpcode, .csharpcode pre { 	font-size: small; 	color: black; 	font-family: consolas, "Courier New", courier, monospace; 	background-color: #ffffff; 	/*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt  { 	background-color: #f4f4f4; 	width: 100%; 	margin: 0em; } .csharpcode .lnum { color: #606060; }</style>

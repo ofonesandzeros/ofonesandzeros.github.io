@@ -1,0 +1,107 @@
+---
+layout: post
+status: publish
+published: true
+title: “Object reference not set to an instance of an object” executing STSADM commands
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 175
+wordpress_url: http://www.ofonesandzeros.com/2009/08/24/object-reference-not-set-to-an-instance-of-an-object-executing-stsadm-commands/
+date: '2009-08-24 13:27:57 -0400'
+date_gmt: '2009-08-24 17:27:57 -0400'
+categories:
+- SharePoint
+tags: []
+comments:
+- id: 42
+  author: sacchit
+  author_email: sacchit@email.com
+  author_url: ''
+  date: '2010-02-02 05:47:20 -0500'
+  date_gmt: '2010-02-02 09:47:20 -0500'
+  content: thank you that saved some time
+- id: 43
+  author: Praveen
+  author_email: battula.praveen@gmail.com
+  author_url: http://praveenbattula.blogspot.com
+  date: '2010-11-06 00:31:34 -0400'
+  date_gmt: '2010-11-06 04:31:34 -0400'
+  content: |-
+    Here is the exact solution for what you are looking for.
+    http://praveenbattula.blogspot.com/2010/11/stsadm-object-reference-not-set-to.html
+
+    Good luck.
+- id: 44
+  author: kk
+  author_email: kanchan.kumbhar@rediffmail.com
+  author_url: ''
+  date: '2011-04-08 02:15:01 -0400'
+  date_gmt: '2011-04-08 06:15:01 -0400'
+  content: |-
+    I am getting error like this:
+
+    FatalError: Object reference not set to an instance of an object.
+       at Microsoft.SharePoint.Deployment.ContentTypeSerializer.GetContentType(SPCon
+    tentType sourceContentType, ImportObjectManager importObjectManager, Boolean isP
+    arentSystemObject)
+       at Microsoft.SharePoint.Deployment.ContentTypeSerializer.ProcessContentType(S
+    PContentType sourceContentType, String contentTypeXml, ImportObjectManager impor
+    tObjectManager, Boolean IsParentSystemObject)
+       at Microsoft.SharePoint.Deployment.ContentTypeSerializer.SetObjectData(Object
+     obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selec
+    tor)
+       at Microsoft.SharePoint.Deployment.XmlFormatter.ParseObject(Type objectType,
+    Boolean isChildObject)
+       at Microsoft.SharePoint.Deployment.XmlFormatter.DeserializeObject(Type object
+    Type, Boolean isChildObject, DeploymentObject envelope)
+       at Microsoft.SharePoint.Deployment.XmlFormatter.Deserialize(Stream serializat
+    ionStream)
+       at Microsoft.SharePoint.Deployment.ObjectSerializer.Deserialize(Stream serial
+    izationStream)
+       at Microsoft.SharePoint.Deployment.ImportObjectManager.ProcessObject(XmlReade
+    r xmlReader)
+       at Microsoft.SharePoint.Deployment.SPImport.DeserializeObjects()
+       at Microsoft.SharePoint.Deployment.SPImport.Run()
+- id: 7822
+  author: ugg pas cher
+  author_email: carnellroj@hotmail.com
+  author_url: http://ugg.fundacioprahu.org/
+  date: '2013-11-25 10:38:05 -0500'
+  date_gmt: '2013-11-25 10:38:05 -0500'
+  content: "Un tailleur jupe est toujours grande pour le travail, mais vous devez
+    en trouver un avec le caractère si vous allez porter pour prendre un verre après.
+    Mirren a choisi une version rayée mais toute jolie copie, ourlet uniques ou ceinture
+    accent va transformer votre tailleur jupe en tenue de soirée. Le Tahari by ASL
+    Suit, veste ceinturée et jupe pour 139,99 $ chez Macy a une veste ceinturée amusant,
+    The Nine Co.\r\nugg pas cher http://ugg.fundacioprahu.org/"
+- id: 15914
+  author: Longchamp 4X4 Porté Main
+  author_email: kvsooz@gmail.com
+  author_url: http://www.rpgmp3.com/infolist.php?pid=2731
+  date: '2014-10-19 05:19:01 -0400'
+  date_gmt: '2014-10-19 05:19:01 -0400'
+  content: kinda appreciated what you published actually. it really is not that easy
+    to find good text toactually read (you know READ and not simply browsing through
+    it like a zombie before moving on), so cheers mate for really not wasting my time
+    on the god forsaken internet.
+- id: 15920
+  author: The Best Ray Ban Replica
+  author_email: hnutyallugw@gmail.com
+  author_url: http://www.thebalancingact.com/listinfo.php?pid=1231
+  date: '2014-10-19 07:37:52 -0400'
+  date_gmt: '2014-10-19 07:37:52 -0400'
+  content: chernov behmer forewarn thudd cinematography Jeana doren ramblin coolers
+- id: 26050
+  author: Ashraf
+  author_email: ashraf.elmaadidi@gmail.com
+  author_url: ''
+  date: '2015-06-11 13:18:28 -0400'
+  date_gmt: '2015-06-11 13:18:28 -0400'
+  content: Thanks a lot for your tip.
+---
+<p>If you are attempting to execute STSADM commands, and are receiving the ominous “Object reference not set to an instance of an object” error, make sure that the user account that are using to execute STSADM has permissions to the SQL database.&#160; I ran into an issue today where the domain account had permissions to the WFE but not to the SQL server, and whereas I could work in Central Admin, and perform other Farm Administrator duties, STSADM commands were failing with the above error.&#160; Once my account was added to the local Administrators group of the SQL server the STSADM commands executed without fail.</p>

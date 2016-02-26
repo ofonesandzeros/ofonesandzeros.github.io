@@ -1,0 +1,28 @@
+---
+layout: post
+status: publish
+published: true
+title: IIS and Windows 2003 Mismatched Service Packs
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 61
+wordpress_url: http://blog.ofonesandzeros.com/2008/09/11/iis-and-windows-2003-mismatched-service-packs/
+date: '2008-09-11 16:00:23 -0400'
+date_gmt: '2008-09-11 20:00:23 -0400'
+categories:
+- SharePoint
+tags: []
+comments: []
+---
+<p>I have this nagging feeling that I have been down this road before, so I need to blog it so maybe, just maybe, I won't waste another hour troubleshooting something I've done before.</p>
+<p><strong>Scenario:</strong></p>
+<p>You browse to Central Admin, or any Site Collection really, and you are prompted incessantly for  your user credentials.  After about 5-8 times, the page comes up.  You are NOT presented with a Forbidden message.</p>
+<p>You check your IIS log files, and you see several 401 errors for WebResource.axd.</p>
+<p>You remember something about installing SP2 when IIS wasn't on the box, then installing IIS from a source that did not have the Service Pack slipstreamed.  Hmmm.  Might be relevant.</p>
+<p><strong>Solution:</strong></p>
+<p>Explained thoroughly by Paul Culmsee on his blog <a href="http://www.cleverworkarounds.com">www.cleverworkarounds.com</a>, <a href="http://www.cleverworkarounds.com/2007/11/15/darn-iis-and-service-packs/">http://www.cleverworkarounds.com/2007/11/15/darn-iis-and-service-packs/</a>.  If it wasn't foreshadowed by the last sentence of the Scenario, reinstalling Windows Server 2003 SP2 was the solution.</p>

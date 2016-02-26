@@ -1,0 +1,57 @@
+---
+layout: post
+status: publish
+published: true
+title: Subversion &quot;Shelving&quot;
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 101
+wordpress_url: http://blog.ofonesandzeros.com/2009/01/07/subversion-shelving/
+date: '2009-01-07 11:04:36 -0500'
+date_gmt: '2009-01-07 15:04:36 -0500'
+categories:
+- Programming
+- Software Development
+tags: []
+comments:
+- id: 25
+  author: Galaxis
+  author_email: gmoran1@cfl.rr.com
+  author_url: ''
+  date: '2009-07-21 09:58:42 -0400'
+  date_gmt: '2009-07-21 13:58:42 -0400'
+  content: Actually Shelving is not Branchcing; only part of the equation.  Don't
+    forget about the merge back!  THis process is clumsy and error-prone (as you'll
+    see from the article you link to) especially after using TFS.  Subversion has
+    a ways to go, but TFS is relatively new and MS never rests on its laurels, so
+    the for a while, the gap (and TFS's adoption) will probably widen.
+- id: 26
+  author: bryan
+  author_email: bryan.napier.md@gmail.com
+  author_url: http://
+  date: '2009-07-21 10:11:56 -0400'
+  date_gmt: '2009-07-21 14:11:56 -0400'
+  content: |-
+    I suppose the "clumsiness" is relative to your general subversion experience.  Branching/merging in Subversion is widely regarded as a somewhat unkempt process.  TortoiseSVN definitely does its part to simplify the process, but is it as straight-forward as TFS?  Nope.
+
+    As to whether shelving is branching or not, I would argue that it is very similar, if not identical, to the concept of private branches.  The difference is more semantic than functional.  Similar to how tags are handled in Subversion.  At the end of the day you are in effect creating a branch, but because it is within the tag parent, the semantic is that it should be read-only.  With shelves in this context, yes, it is a branch, but because the branch is within /shelf the semantic dictates that it is intended to be a "parking lot" for code for an indeterminate period of time, not a traditional branch that would have additional commits.
+
+    Great comments Galaxis, thanks.
+- id: 24982
+  author: Janina
+  author_email: ethelburkholder@gawab.com
+  author_url: http://Darlene.fr
+  date: '2015-03-17 16:46:57 -0400'
+  date_gmt: '2015-03-17 16:46:57 -0400'
+  content: "Hi blogger, if you need articles for your blog or for tier1 contextual
+    backlinks you should read about Stoonkels Rewriter - it's very useful online tool,\r\njust
+    google it."
+---
+<p>I had one of those moments yesterday where you get 60% of the way through fixing a problem a certain way, and then discover that there was a simpler, more elegant solution that would require 10% of the effort.&#160; Problem being, I had just written a lot of code that I didn't necessarily want to lose forever, incase it may be useful somewhere down the road.</p>
+<p>From my days working with Team Foundation Server I remembered the &quot;Shelving&quot; concept.&#160; Unfortunately, I was using Subversion, not Team Foundation Server.&#160; But isn't a shelf really just a branch?&#160; So I figured I could do a poor-mans shelf with Subversion, and I was right.&#160; Worked great.</p>
+<p>I was going to write up my steps to do so but decided I would do a quick Google sanity check before expending the effort.&#160; Glad I did, cause <a href="http://markphip.blogspot.com">Mark Phippard</a> did a <a href="http://markphip.blogspot.com/2007/01/shelves-in-subversion.html">much better job</a> then I would have done.&#160; Kudos Mark, thanks for the excellent amount of detail.</p>

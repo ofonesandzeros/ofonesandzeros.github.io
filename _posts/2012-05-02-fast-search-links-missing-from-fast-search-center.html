@@ -1,0 +1,40 @@
+---
+layout: post
+status: publish
+published: true
+title: FAST Search Links Missing from FAST Search Center
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 244
+wordpress_url: http://www.ofonesandzeros.com/?p=244
+date: '2012-05-02 13:31:03 -0400'
+date_gmt: '2012-05-02 13:31:03 -0400'
+categories:
+- SharePoint
+tags:
+- fast
+- SharePoint
+comments: []
+---
+<p>If you create a FAST Search Center based on the FAST Search Center Site Collection template, you may find that the FAST Search links are missing within the "Site Collection Settings" in Site Settings.  If this is the case, you need to fire up PowerShell and add the SearchExtensions feature to the site collection using the following code (from Neil Richards at <a href="http://www.neilrichards.net/blog/?p=149" title="http://www.neilrichards.net/blog/?p=149">http://www.neilrichards.net/blog/?p=149</a>):</p>
+<p>[code]</p>
+<p>PS C:UsersAdministrator&amp;amp;gt; Get-SPFeature | ? { $_.id -eq &amp;amp;quot;5EAC763D-FBF5-4d6f-A76B-EDED7DD7B0A5&amp;amp;quot;}</p>
+<p>Result:<br />
+DisplayName                    Id                                       Scope<br />
+-----------                    --                                       -----<br />
+SearchExtensions               5eac763d-fbf5-4d6f-a76b-eded7dd7b0a5     Site</p>
+<p>PS C:UsersAdministrator&amp;amp;gt; $siteWithNoFastFeatures = get-SPSite http://your SP SITE NAME FOR FAST COLLECTION (ADD UR OWN url)<br />
+PS C:UsersAdministrator&amp;amp;gt; $siteWithNoFastFeatures.Features.Add(&amp;amp;quot;5EAC763D-FBF5-4d6f-A76B-EDED7DD7B0A5&amp;amp;quot;)</p>
+<p>Result:<br />
+DefinitionId           : 5eac763d-fbf5-4d6f-a76b-eded7dd7b0a5<br />
+Parent                 : SPSite Url=http:// SP FAST NAME (ur OWN url)<br />
+Properties             : {}<br />
+Definition             : SPFeatureDefinition Name=FeatureDefinition/5eac763d-fbf5-4d6f-a76b-eded7dd7b0a5<br />
+Version                : 14.0.0.0<br />
+FeatureDefinitionScope : Farm<br />
+[/code] </p>

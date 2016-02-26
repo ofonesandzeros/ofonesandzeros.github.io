@@ -1,0 +1,43 @@
+---
+layout: post
+status: publish
+published: true
+title: Where is my storage space going?
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 75
+wordpress_url: http://blog.ofonesandzeros.com/2008/11/17/where-is-my-storage-space-going/
+date: '2008-11-17 14:59:33 -0500'
+date_gmt: '2008-11-17 18:59:33 -0500'
+categories:
+- SharePoint
+tags: []
+comments:
+- id: 20
+  author: Nick Kharchenko
+  author_email: kharchenko@mapilab.com
+  author_url: http://www.mapilab.com/sharepoint/statistics/
+  date: '2009-07-16 07:03:00 -0400'
+  date_gmt: '2009-07-16 11:03:00 -0400'
+  content: |-
+    MAPILab Statistics for SharePoint is another analytics solution. It can be useful for your SharePoint projects: more than 40 customizable interactive reports about SharePoint internal/external portals, great features like full integration with MOSS/WSS/AD, simple implementation and excellent
+
+    Group of reports about size of databasesinform you about the size of the SharePoint, trends of growth of the SharePoint server database and more.
+---
+<p>Over the past few weeks I have had several instances of where I need to know how where space is being allocated within a site collection.&#160; For instance, one client has seen tremendous growth of the site collection database, but is not sure how/where/why the space is being used.&#160; Another client has also seen rapid content database growth, and would like to make sure the space allocation is legitimate.</p>
+<p>On the surface it did not appear that SharePoint had an out-of-the-box solution for this, which seemed criminal.&#160; A few products out there seemed to fill that void:</p>
+<ul>
+<li>Nintex Reporting (<a href="http://www.nintex.com">http://www.nintex.com</a>) </li>
+<li>Quest Capacity Manager for Sharepoint (<a href="http://www.quest.com">http://www.quest.com</a>) </li>
+</ul>
+<p>However, finally, today I came across a solution that IS right there out-of-the-box.&#160; While researching a completely unrelated issue, I discovered the _layouts/storman.aspx file, as referenced <a href="http://mdablog.spaces.live.com/blog/cns!B0C40902E1212960!749.entry">here</a>.&#160; The trick is that you <strong>must</strong> have a site collection quota specified in order to use this feature.&#160; Once you configure a quota you will see &quot;Storage space allocation&quot; located under &quot;Site Collection Administration&quot; in Site Settings:</p>
+<p><a href="http://www2.ofonesandzeros.com/wp-content/uploads/2008/11/stormanlink1.jpg"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="440" alt="stormanlink" src="http://www2.ofonesandzeros.com/wp-content/uploads/2008/11/stormanlink-thumb1.jpg" width="246" border="0" /></a> </p>
+<p>When you click on &quot;Storage space allocation&quot; you receive a page similar to the following (but without the huge black block protecting the innocent):</p>
+<p><a href="http://www2.ofonesandzeros.com/wp-content/uploads/2008/11/storman1.jpg"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="463" alt="storman" src="http://www2.ofonesandzeros.com/wp-content/uploads/2008/11/storman-thumb1.jpg" width="644" border="0" /></a> </p>
+<p>You can see that it shows the amount of space used in relation to the configured site quota, and then by default displays the amount of space being consumed by various document libraries in descending size!&#160; Fantastic!</p>
+<p>Definitely not as complete as the Nintex or Quest Software solutions, but its great that there is in-fact an out-of-the-box way of achieving this.</p>

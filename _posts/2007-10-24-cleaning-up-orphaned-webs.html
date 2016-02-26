@@ -1,0 +1,26 @@
+---
+layout: post
+status: publish
+published: true
+title: Cleaning Up Orphaned Webs
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 39
+wordpress_url: http://blog.ofonesandzeros.com/2007/10/24/cleaning-up-orphaned-webs/
+date: '2007-10-24 13:11:07 -0400'
+date_gmt: '2007-10-24 17:11:07 -0400'
+categories:
+- SharePoint
+tags: []
+comments: []
+---
+<p>Ran into an issue today with installing the October 9th SharePoint Security Patch.  During the content database upgrade I received several errors that certain sites and webs were missing.  This is due to the staging content database being migrated from a development content database, and there are slight differences in the configuration databases between the two environments.  In any event, I found the following posting from Cory Burns that took care of the issue:</p>
+<blockquote><p><strong>How to Clean Orphans from your environment.</strong></p>
+<p><strong>(Be smart have backups prior whenever you are performing maintenance on your farm, use suggestions at your own risk.)</strong></p>
+<p>Configuration Orphans: These are the orphans that reside in your configuration database but have no child counterpart (contentDB entry).  Cleaning these are the easiest of all the orphans.  Simply detach the content database from your farm that was included in the result set and reattach it.  This will refresh the sitelist that is tied to that content database and will remove the stale entry.</p></blockquote>
+<p><a href="http://blogs.technet.com/corybu/archive/2007/05/31/sharepoint-orphans-explained.aspx">Sharepoint Tips and Tricks : Sharepoint Orphans Explained</a></p>

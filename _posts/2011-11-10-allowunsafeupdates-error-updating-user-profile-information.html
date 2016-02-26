@@ -1,0 +1,83 @@
+---
+layout: post
+status: publish
+published: true
+title: AllowUnsafeUpdates Error Updating User Profile Information
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 232
+wordpress_url: http://www.ofonesandzeros.com/?p=232
+date: '2011-11-10 13:33:34 -0500'
+date_gmt: '2011-11-10 13:33:34 -0500'
+categories:
+- Technology
+- SharePoint
+tags:
+- SharePoint
+- upa
+- user profile
+comments:
+- id: 63
+  author: Matthias Fonteyne
+  author_email: matthias.fonteyne@gmail.com
+  author_url: ''
+  date: '2012-06-05 12:56:15 -0400'
+  date_gmt: '2012-06-05 12:56:15 -0400'
+  content: |-
+    Thanks,
+
+    This is the exact same problem we faced. This is really weird...
+- id: 23519
+  author: Nike Roshe Run Femme Bleu
+  author_email: iyaacl@gmail.com
+  author_url: http://www.cristalcreditgroup.com/contact.asp?pdf=44659
+  date: '2015-01-29 05:31:35 -0500'
+  date_gmt: '2015-01-29 05:31:35 -0500'
+  content: Excellent dans son travail de presse sur Thiago Motta, il a aussi &eacute;calir&eacute;
+    le jeu st&eacute;phanois et ouvert le score sur ce magnifique encha&icirc;nement.
+---
+<p>My customer has a requirement to track the last login date/time for each SharePoint user so that they can disable accounts that have not had any activity for a time period.  I decided to implement this requirement by creating an HttpHandler and tying a jQuery .post call into the custom masterpage.  The HttpHandler would then update a property, LastLogin, that has been added to the user profile service application.</p>
+<p>The issue I ran into is that SharePoint would constantly complain about not allowing updates via a GET, and that I needed to set the AllowUnsafeUpdates property on the SPWeb object.  Sounds simple and straight forward enough, and oddly this was an instance where not only did SharePoint give you a decent error, it even went so far as to propose a solution!  Double word score!  Unfortunately it took forever to figure out WHICH SPWeb object it was talking about!  Check out the following code:</p>
+<p>[code language="c#"]<br />
+private void UpdateUserLastLogin(HttpContext context)<br />
+        {<br />
+            string siteURL = SPContext.Current.Site.Url;</p>
+<p>            SPSecurity.RunWithElevatedPrivileges(delegate()<br />
+            {<br />
+                using (SPSite site = new SPSite(SPContext.Current.Site.ID))<br />
+                using (SPWeb web = site.OpenWeb(SPContext.Current.Web.ID))<br />
+                {</p>
+<p>                    // this is the important bit<br />
+                    SPContext.Current.Site.AllowUnsafeUpdates = true;<br />
+                    SPContext.Current.Web.AllowUnsafeUpdates = true;</p>
+<p>                    SPServiceContext serviceContext = SPServiceContext.GetContext(site);<br />
+                    UserProfileManager profileManager = new UserProfileManager(serviceContext);</p>
+<p>                    UserProfile profile;</p>
+<p>                    if (!profileManager.UserExists(SPContext.Current.Web.CurrentUser.LoginName))<br />
+                    {<br />
+                        profile = profileManager.CreateUserProfile(SPContext.Current.Web.CurrentUser.LoginName);<br />
+                    }<br />
+                    else<br />
+                    {<br />
+                        profile = profileManager.GetUserProfile(SPContext.Current.Web.CurrentUser.LoginName);<br />
+                    }</p>
+<p>                    profile["LastLogin"].Value = DateTime.Now;</p>
+<p>                    profile.Commit();</p>
+<p>                    SPContext.Current.Web.AllowUnsafeUpdates = false;<br />
+                    SPContext.Current.Site.AllowUnsafeUpdates = false;<br />
+                }<br />
+            });<br />
+        }<br />
+[/code]</p>
+<p>So if you look at the part commented "This is the important bit" you will see AllowUnsafeUpdates getting set.  This is what I finally came to which actually worked.  Previously I tried the following:</p>
+<p>[code language="C#"]<br />
+site.AllowUnsafeUpdates = true;<br />
+web.AllowUnsafeUpdates = true;<br />
+[/code]</p>
+<p>And that did not work at all.  So I'm still not completely clear why setting it on the SPContext.Current.Web works, considering that I am spinning up new instances of SPSite and SPWeb and sending them to UserProfileManager, but whatever.  I'll take it.</p>
+<p>If anyone can explain why this works that would be awesome, in the meantime I'll keep this handy incase I run across this dreaded error in the future.</p>

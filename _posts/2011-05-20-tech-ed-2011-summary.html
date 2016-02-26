@@ -1,0 +1,163 @@
+---
+layout: post
+status: publish
+published: true
+title: Tech Ed 2011 Summary
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 200
+wordpress_url: http://www.ofonesandzeros.com/?p=200
+date: '2011-05-20 16:32:43 -0400'
+date_gmt: '2011-05-20 20:32:43 -0400'
+categories:
+- SharePoint
+- Software Development
+tags:
+- denali
+- nuget
+- SharePoint
+- teched
+comments:
+- id: 57
+  author: Jason Fant
+  author_email: jfant@att.net
+  author_url: ''
+  date: '2011-05-23 10:32:33 -0400'
+  date_gmt: '2011-05-23 14:32:33 -0400'
+  content: |-
+    You forgot to mention the very important you learned...
+
+    Sushi toro = new Sushi();
+
+    toro.BackgroundColor = "Grey";
+
+    GITract tummy = new GITract(toro);
+
+    tummy.Staus = "Ralph!"
+---
+<p>Sitting in the Atlanta airport waiting for my flight home seems as good a time as any to summarize what I learned this week at Tech Ed 2011 in Atlanta.&#160; </p>
+<p>First, this is the second year in a row that I have used my iPad at Tech Ed for note taking.&#160; Last year I used Apple’s Pages app to take notes, and that worked reasonably well.&#160; During the keynote this year I searched for other options and came across <a href="http://bit.ly/l2A9AV">iThoughts HD</a>.&#160; This is a mind mapping app similar to <a href="http://bit.ly/lg8bvT">Freemind</a> or <a href="http://www.xmind.net/">XMind</a> on the PC.&#160; This app worked incredibly well for me taking notes, as often the presentations would bounce back and forth between topics and the ability to simply tap on the nodes within the mind map felt very natural and productive.&#160; In addition, the app allows you to export in a number of formats, two of which being Freemind and Xmind, so I will be able to send my maps to the PC and edit them in one of those programs.&#160; </p>
+<p>While the iThoughts HD app was great, you could do the same thing on the PC using the previously mentioned Freemind or Xmind apps.&#160; Where the iPad really shines however is the fact that you can go ALL DAY taking notes, browsing the web, tweeting, etc. without ever having to look for an electric outlet!&#160; If you have been to Tech Ed, you no doubt understand how difficult it can be to find electric outlets to charge your laptop.&#160; In a sea of 10,000 attendees, electric outlets are precious resources.&#160; </p>
+<p>Okay, enough about how great the iPad is, on to what I actually learned!</p>
+<h3>Virtualizing SharePoint</h3>
+<p>Virtualizing SharePoint was a good session, although it didn’t necessarily provide a bevy of new information, it at least validated things I believed to be true.&#160; Couple of key points:</p>
+<ol>
+<li>SharePoint and virtualization go together like peanut butter and jelly.&#160; If someone tries to tell you otherwise, smack them and their momma.&#160; Yes, SharePoint is resource intensive, so no, don’t build your hyper-v cluster on 386SXs.&#160; Use the latest server hardware technologies available, use the latest hypervisor offerings from Microsoft and VMware, use Windows Server 2008 R2 guests, and be happy.</li>
+<li>Certain SharePoint roles are absolute slam-dunks for virtualization, other roles require further consideration.&#160; Web front ends, query, and app roles are all ideal candidates for virtualization.&#160; What makes something an ideal candidate for virtualization?&#160; Really it comes down to how resource intense the role is.&#160; In a SharePoint farm, the aforementioned roles happen to be the lighter roles within the farm.&#160; This leaves your index/crawl roles and your SQL roles up for debate.&#160; Whether or not you choose to virtualize your SQL servers is greatly influenced by how large/active of a farm you have, and how important the benefits of virtualization are.&#160; </li>
+<li>Fixed-size VHDs and direct-attached LUNs are very close in performance.&#160; Do NOT use dynamically sizing VHDs.&#160; You can think about it, but DON’T DO IT.&#160; Where disk performance is of utmost importance, *hem hem* SQL server *hem hem*, send the LUN straight to the VM.&#160; Where it is not as critical, like in a web front end or app server role, using a fixed-size VHD gives some flexibility in terms of moving the VHD around, and the performance impact is negligible.</li>
+<li>This doesn’t apply to just virtualization scenarios, but ALWAYS, ALWAYS, ALWAYS define a SQL alias and point SharePoint at the alias, otherwise you can not move your SQL instance housing the SharePoint config database.</li>
+<li>Okay, I don’t fully get this one just yet, so I need to do more research, but apparently allocating memory that causes the VM to cross NUMA boundaries is a V.ery B.ad T.hing.&#160; In simple terms I understood what was being said, take the amount of RAM of the host machine and divide it by the number of cores, and that is your NUMA window size.&#160; Then multiply that size by the number of CPUs assigned to the guest and do not exceed that, but as I understand it that is an oversimplification.&#160; Crossing NUMA boundaries allegedly leads to a performance hit of 30% or more.</li>
+<li>For any disk intense guests make sure the RAID configuration for the VHD or the RAID configuration for the LUN is RAID 10.&#160; This ensures the greatest write performance.</li>
+<li>Reverting to VM snapshots is NOT supported by Microsoft.</li>
+<li>Combine SQL Mirroring with HyperV/Vsphere clustering and you have a robust high availability solution.</li>
+<li>Do not put your SQL guest and your web front end on the same physical host.</li>
+</ol>
+<h3>Cross-Farm SharePoint Services</h3>
+<p>This session was really heavy on the PowerShell needed to implement cross-farm services, which I didn’t find to be tremendously useful.&#160; The PowerShell was not up long enough for someone to transcribe it, and you are not going to commit it to memory in the short amount of time it is being displayed, so I would have preferred more discussion around the concepts and techniques being used instead of just showing code.&#160; In any event, I did pickup a few things from this session:</p>
+<ol>
+<li>Cross-farm shared services are synonymous with federated services.</li>
+<li>Cross-farm shared services can be in different domains.&#160; </li>
+<li>Writing PowerShell scripts to create/configure your farms makes for better disaster recovery documentation than “click here, click here” documentation.</li>
+<li>Cross-farm shared services are not compatible with Office 365.</li>
+<li>The load balancer that SharePoint has out-of-the-box for service applications does simple round robin load balancing, it does not perform health checks of the services.</li>
+<li>Regardless of the authentication type for the web application, behind the scenes SharePoint is using claims authentication.</li>
+<li>When troubleshooting issues with federated services, ensure that the consumer has permissions to the Topology Service.</li>
+</ol>
+<h3>Building IT Dashboards with Visio Services</h3>
+<p>Picked up a few tidbits here; I hadn’t previously seen any demos of Visio Services or had an opportunity to play with it myself, so just seeing it being used was interesting.&#160; Here are the highlights:</p>
+<ol>
+<li>Visio Data Graphics allow you to overlay shapes with an icon based on a rule.&#160; Think Excel Conditional Formatting rules.&#160; Very cool.</li>
+<li>When you save your Visio Diagram, make sure to save as a “Web Drawing”</li>
+<li>Visio Services provides a “read-only” view of the diagram.</li>
+<li>Visio Services renders using a Silverlight web part, but can degrade to a raster form of the diagram if Silverlight is not available on the client.</li>
+<li>Visio Services can use the following data sources:&#160; Excel Services, SQL, OLE DB, ODBC, Custom, SharePoint List.&#160; It cannot use External Lists/BCS or Analysis Services.</li>
+<li>Visio Services is a component of the SharePoint Enterprise SKU.</li>
+<li>Visio 2010 Premium contains a SharePoint Workflow template.</li>
+<li>You can use web part connections to connect a Visio Diagram to an InfoPath Form web part as an example.&#160; If you want to connect multiple data columns you need to use SharePoint Designer as the web interface only allows you to connect a single data field between the two web parts.</li>
+<li>Visio Web Services ships with an extensive JavaScript library.&#160; It is preferable to use this library to connect web parts as opposed to using web part connections because web part connections cause post backs.</li>
+<li>When defining a workflow in SharePoint Designer, if you select “Show Workflow Visualization on Status Page” check box, SharePoint will render a Visio Services view of the workflow and overlay the status of each workflow action.</li>
+</ol>
+<h3>SharePoint and Silverlight</h3>
+<p>The SharePoint and Silverlig<br />
+ht session was very code heavy, which wasn’t incredibly valuable to me.&#160; Not that I have anything against code, obviously I do not, but I wasn’t going to be committing to memory hundreds of lines of code over a 1.5 hour period.&#160; Still, I was able to pick up on some key concepts which made the session worthwhile.&#160; First, the session validated my belief that Silverlight would prove to be a great technology moving forward with SharePoint as SharePoint portals become more and more locked down.&#160; In other words, instead of deploying customizations that are server side, many client requirements can be handled through JavaScript or Silverlight and not require either sandbox solutions or farm solutions.&#160; Here are a couple of key points I heard:</p>
+<ol>
+<li>Search for and install the Silverlight SharePoint extensions for Visual Studio.&#160; They make it simple to incorporate your Silverlight into a SharePoint page for development.</li>
+<li>Silverlight has a technology called HTML bridging which allows the Silverlight application to modify HTML within the hosting page.&#160; This was demonstrated by defining a ‘div’ on a page and then clicking a shape in the Silverlight app which subsequently added text to the div.&#160; Pretty cool.</li>
+<li>The <a href="http://msdn.microsoft.com/en-us/library/system.data.services.client.dataservicequery.aspx">DataServiceQuery</a> class can/should be used to query SharePoint OData services.</li>
+<li>Silverlight is able to take advantage of the rich SharePoint 2010 client object model, including the <a href="http://msdn.microsoft.com/en-us/library/microsoft.sharepoint.client.webparts.limitedwebpartmanager.aspx">LimitedWebPartManager</a> class.</li>
+<li>There is an issue with older ASMX web services which causes them to be incompatible with Silverlight.&#160; As a workaround, a endpoint behavior has been developed and open sourced that will adapt the data types from the legacy ASMX web service to the data types expected by Silverlight.</li>
+</ol>
+<h3>Writing SharePoint Service Applications</h3>
+<p>This was another session that was really deep on implementation code.&#160; I’m sorry, but I lose interest pretty quick in a session like this; really the slide deck becomes more important than what the speaker is saying.&#160; It was useful though to get a feeling for the complexity level of writing a SharePoint custom service application.&#160; Simply put – it’s a very high complexity level!</p>
+<ol>
+<li>In most instances, write a web service, not a service application.</li>
+<li>Write a service application when you want a unified management interface through Central Administration, want to take advantage of SharePoint’s backup and recovery features, want to take advantage of SharePoint’s round-robin load balancing.</li>
+<li>Creating a service application involves implementing a minimum of 5 classes.&#160; Best to just go here <a title="http://bit.ly/giiGhb" href="http://bit.ly/giiGhb">http://bit.ly/giiGhb</a> and read up on it.</li>
+</ol>
+<h3>NuGet in the Enterprise</h3>
+<p>I’ve seen <a href="http://nuget.codeplex.com/">NuGet</a> popping up everywhere lately, and was very interested in this session to learn more about its applications in an enterprise environment.&#160; If you are not familiar with NuGet, read up here <a title="http://bit.ly/mqgRvV" href="http://bit.ly/mqgRvV">http://bit.ly/mqgRvV</a>.&#160; In a nutshell, NuGet facilitates incorporating dependencies into your projects.&#160; If you know anything about Java, think Maven repo.&#160; Where it is different however is that it is not involved in your build like Maven is, but it does make it simpler to incorporate dependencies into your project and to upgrade dependencies within your projects.</p>
+<p>Okay, so how about the “Enterprise” part?&#160; What is great about NuGet is that while it is perfectly viable for you to go out and install packages from the public NuGet gallery, in most enterprise development scenarios you will want to have more control over what packages are being incorporated into projects.&#160; NuGet provides the ability to stand up an enterprise NuGet server, either as just a simple “head-less” server or a rich, <a href="http://www.orchardproject.net/">Orchard</a>-driven gallery.&#160; With this you can provide the ability to browse the NuGet gallery through a rich web interface.</p>
+<p>It is important to note that while there is a NuGet Visual Studio extension, NuGet works perfectly well on a clean build server, and <a href="http://www.jetbrains.com/">Jetbrains</a> is working to incorporate the ability to integrate NuGet into <a href="http://www.jetbrains.com/teamcity/">TeamCity</a>.&#160; This is great news as many organizations will want the ability to build dependency packages within TeamCity and then publish those packages to the enterprise NuGet server.&#160; You can accomplish this today using the command-line in your build definitions, but making TeamCity NuGet aware will facilitate integration quite a bit.</p>
+<p>NuGet = good.&#160; I will definitely be adding setting up a NuGet server to my list of things to do at the office.</p>
+<h3>Claims Identity and SharePoint</h3>
+<p>I will freely admit that I had next to no knowledge of Claims-based Authentication coming into this session.&#160; I knew it was a radio-button I could select when provisioning a web application, and I knew that I didn’t want to use it, instead I wanted classic authentication.&#160; That should have been my first clue that I had some homework to do.&#160; Career tip – If you are presented with two options, one saying “classic” and one saying something else, learn what that other option means or risk extinction!&#160; Classic cars are cool, classic* in technology is un-cool.&#160; </p>
+<p>There was a great analogy shared during this session with regard to what “claims-based” authentication means.&#160; The presenter, and I apologize I didn’t take notes on who the presenter was, but in any event, the presenter said that on his Facebook page his hometown is listed as Chicago.&#160; Now, he actually lives outside of Chicago in a suburb.&#160; The fact this his Facebook page says his hometown is Chicago does not give him the ability to vote in Chicago elections because the Chicago board of elections does not trust Facebook as a claims provider.&#160; Instead, the board of elections trusts the motor vehicle administration, and his driver’s license has his actual home address.&#160; </p>
+<p>What this analogy means is essentially you can setup SharePoint to trust the claims of other providers, whether they be consumer identity providers like Google or Live, external partners, etc.&#160; Very powerful stuff which could definitely impact the way that extranets are architected and implemented.</p>
+<p>Couple of key bullets:</p>
+<ol>
+<li>Claims are SAML-based.&#160; While Active Directory Federation Services are likely to be the most common claims identity providers, any identity provider issuing a SAML-based claim is compatible.</li>
+<li>Claims authentication is based on Windows Identity Foundation.</li>
+<li>Additional information about claims authentication in general is available here <a title="http://bit.ly/3G30GP" href="http://bit.ly/3G30GP">http://bit.ly/3G30GP</a>.</li>
+<li>SharePoint 2010 allows multiple authentication methods to be defined for a single zone.</li>
+<li>Trusted identity token issuer is added through PowerShell (most claims authentication management is done through PowerShell)</li>
+<li><a href="http://bit.ly/iU139G">SelfSTS</a> is a utility that makes it easy to develop/debug claims authentication.</li>
+<li>SharePoint does not use the operating systems certificate store.&#160; Certificates that are loaded into SharePoint are actually stored in SQL so that they apply farm-wide.</li>
+<li>Claims authentication impacts the behavior of the people picker.&#160; Essentially, SharePoint does not know who is on the other side of the fence providing claims.&#160; So if you wanted to say “Johnny Appleseed” from “ABC Corp” can<br />
+ access a given site, you would say in the people picker, “Any claim coming in where the e-mail address is <a href="mailto:jappleseed@abcorp.com">jappleseed@abcorp.com</a> can access”.&#160; You cannot validate that <a href="mailto:&ldquo;jappleseed@abccorp.com">“jappleseed@abccorp.com</a>” is the correct e-mail address.&#160; It is possible that through setting up a user profile crawl of an external LDAP server you may be able to get around this.&#160; Need to do some research on that.</li>
+</ol>
+<h3>Automating Business Processes Using SharePoint, InfoPath Forms Services, and Word Services</h3>
+<p>This will likely not come as a surprise to many, but in my experience people are really embracing SharePoint for business process automation.&#160; This isn’t necessary one of the features that I see widely touted about SharePoint, but InfoPath Forms Services and SharePoint’s out of box workflow support just begs for business process automation.&#160; Gone are the days of writing departmental ASP.NET web apps for anything and everything (sniff, sniff).&#160; This session had some great best practices for automating business processes in SharePoint.</p>
+<ol>
+<li>As mentioned previously, this session also really pushed using sandbox solutions and the client-side object model.&#160; With Silverlight and JQuery we can finally truly push presentation out to the browser and not have this mix-match of services and presentation on the server.&#160; Several sessions all highly recommended sandbox solutions, and to target solutions for Office365 compatibility regardless of whether or not you are actually deploying to the cloud.&#160; This will ensure the least painful (read costly) upgrades and maintenance.</li>
+<li>Follow application lifecycle management even for out-of-the-box SharePoint business process automation.&#160; What does this mean?&#160; It means defining your process before implementing it.&#160; Implementing the process in a non-production environment before moving to production.&#160; Considering versioning impact on the process.</li>
+<li>I wholeheartedly agree with this one – when using business connectivity services, never connect directly to a SQL database.&#160; Implement a web service and connect BCS to the web service.&#160; This gives you the ability to enforce any business rules that may be required if write is enabled through BCS, logging, abstraction of the data layer incase things move around, etc.&#160; Preferably you already have a service layer in front of the SQL database and can simply connect to that, but if you do not, go ahead and write one!</li>
+<li>Never use “Revert to self” authentication for BCS.&#160; Revert to self uses the application pool identity of the web application to authenticate to the backend service.&#160; It is much more secure to use passthrough authentication (the callers identity passes through to the backend system) or use secure store service to map the user to a credential for the backend system.</li>
+<li>Stay away from external list lookup columns.&#160; If you implement these the data gets cached and whatever data the user who created the lookup column had rights to gets presented to everyone.&#160; In other words, if Joe creates the lookup column and he has access to all rows in the table, but Ben is supposed to only see half of the rows, Ben will end up seeing all rows in the lookup column.&#160; One workaround for this is to use InfoPath forms and use a secondary data connection to populate a drop-down instead of using a lookup column type.</li>
+<li>I didn’t realize there is an OpenXML SDK that can be used to generate a class for writing Word documents (<a title="http://bit.ly/iYPgEg" href="http://bit.ly/iYPgEg">http://bit.ly/iYPgEg</a>).</li>
+<li>As with other customizations in SharePoint, workflows should first be done using out of the box features.&#160; If out of the box features cannot meet the business requirements then reusable custom activities should be employed.&#160; As an absolute last resort create a custom workflow in Visual Studio.</li>
+</ol>
+<h3>Cross Organization Collaboration Using SharePoint Claims Authentication</h3>
+<p>Whew, this post is running a lot longer than I was expecting!&#160; Must ….&#160; Keep …. Typing!&#160; </p>
+<p>Anyway, this session was pretty similar to the earlier session on setting up claims authentication, but there were a few tidbits I picked up that weren’t in the other session:</p>
+<ol>
+<li>Office 2010 applications fully support claims-based authentication.&#160; Office 2007 applications have some “gotchas”.&#160; What those “gotchas” are were not explained, so I’ll have to do some research on this.</li>
+<li>Claims authentication enables SharePoint to use “consumer” ids like Facebook, Google, Live, etc.&#160; The best practice when using consumer ids is to create a local unique identifier for the account and map the identifier to the consumer id.&#160; This provides some flexibility in terms of being able to switch the consumer ID that is used for an account without it changing the underlying profile.</li>
+</ol>
+<h3>SQL Server “Denali” Reporting Improvements</h3>
+<p>So, <a href="http://bit.ly/c5lxNy">SQL Server “Denali”</a> will be coming out soon as a CTP, and man oh man, after seeing the improvements being made to reporting services and its SharePoint integration, I cannot wait!&#160; Here are some of the highlights I heard:</p>
+<ol>
+<li>Native SharePoint service application integration.&#160; No more bubblegum and duct tape integration, reporting services will be a first class SharePoint service application.&#160; Microsoft is indicating performance improvements of 30-60% over SQL Server 2008 R2 SharePoint integrated mode.&#160; In addition, configuration will be managed through Central Administration and logging will be through ULS.</li>
+<li>Self-service alerting.&#160; Users will be able to setup alerts based on data contained in reports.&#160; Very cool stuff.</li>
+<li>Ability to export as Open XML file formats.&#160; Still no PowerPoint support, but a step in the right direction.</li>
+<li>One of the coolest things I saw was <a href="http://bit.ly/cVf0aH">“Project Crescent”</a>.&#160; Think Report Builder meets Silverlight.&#160; The intention is to enable end users to create their own reports right in the SharePoint portal using a Silverlight client and SQL Server Analysis Services integration.&#160; The demo was incredibly impressive, can’t wait to kick the tires when the CTP comes out.</li>
+</ol>
+<p>Alright, this is the part of the program where I start to get lazy <img style="border-bottom-style: none; border-right-style: none; border-top-style: none; border-left-style: none" class="wlEmoticon wlEmoticon-smile" alt="Smile" src="http://localhost:31663/wp-content/uploads/2011/05/wlEmoticon-smile.png" />.&#160; I attended another 5 sessions, but each of the sessions did not really have enough for me to start a whole new section here.&#160; So, here is what I propose.&#160; I’m just going to bullet out the couple random things picked up from each session in one list.&#160; It’s not all that much, so it should be fairly easy to follow.&#160; Let’s give it a try, and see what happens, shall we?</p>
+<ol>
+<li>MVC 3 supports HTML5 markup.</li>
+<li>With MvcScaffolding you can add your validation rules to your POCO classes and the scaffolding will generate the appropriate DB and web validation.</li>
+<li>Entity Framework 4.1 supports code first!&#160; Hooray!</li>
+<li>Web forms is getting into the scaffolding scene also.&#160; WebFormsScaffolding.&#160; Does anyone still care about web forms?&#160; Please Microsoft, next rev of SharePoint kick web forms to the curb so we can all put web forms out to pasture and wash the stink from ourselves.</li>
+<li>IISExpress enables you to have a nice lightweight usermode IIS that supports SSL.</li>
+<li>You <u>can</u> do HTML5 in SharePoint!&#160; Make sure to remove the “meta” tag that says IE-Compat-8.&#160; Just get rid of it. </li>
+<li>Couple ways of loading jQuery into ShareP<br />
+oint:&#160; Script link, Sys.loadScripts, Custom Action ScriptLink.</li>
+<li>Wasn’t aware of the following JavaScript function: _spBodyOnLoadFunctionNames.push() allows you to put something into the body onLoad from a content editor web part.</li>
+<li>Couple other cool bits of JavaScript:&#160; SP.UI.Notify and SP.UI.Status give you the ability to do the cool yellow notifications or red status alerts in SharePoint.&#160; SP.UI.ModalDialog is used to pop up a modal (duh).</li>
+<li>Wasn’t aware of Randy Drisgill’s starter master page for 2010:&#160; <a title="http://bit.ly/cfuPTK" href="http://bit.ly/cfuPTK">http://bit.ly/cfuPTK</a>.</li>
+</ol>
+<p>Holy cow, I actually do not have any more notes!&#160; So that was basically my week at TechEd.&#160; I also worked in the 70-667 (SharePoint 2010 Configuration) exam and some time in the Exhibit Hall talking to various SharePoint component vendors.&#160; Lots and lots of follow-on research to do, can’t wait!</p>

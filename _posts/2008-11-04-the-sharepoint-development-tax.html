@@ -1,0 +1,26 @@
+---
+layout: post
+status: publish
+published: true
+title: The SharePoint Development Tax
+author:
+  display_name: bryan
+  login: bryan
+  email: bryan.napier.md@gmail.com
+  url: ''
+author_login: bryan
+author_email: bryan.napier.md@gmail.com
+wordpress_id: 63
+wordpress_url: http://blog.ofonesandzeros.com/2008/11/04/the-sharepoint-development-tax/
+date: '2008-11-04 12:28:50 -0500'
+date_gmt: '2008-11-04 16:28:50 -0500'
+categories:
+- SharePoint
+tags: []
+comments: []
+---
+<p>Typically when you are talking about SharePoint the conversation revolves around all of the great &quot;out of the box&quot; functionality you receive with the product.&#160; In no way do I intend to argue against that, SharePoint is a fantastic product that does many things very well.</p>
+<p>SharePoint as a development platform... well, that's a whole different story!&#160; Jeffrey Palermo talks about it <a href="http://codebetter.com/blogs/jeffrey.palermo/archive/2007/09/13/sharepoint-is-not-a-good-development-platform.aspx">here</a>, although his primary gripe seems to be that SharePoint has to run on a server OS, which would require using a development VM.&#160; I do all development in VMs regardless, so that isn't really a deal-breaker for me at all.&#160; Speaking of which, Andrew Connell has a great <a href="http://www.andrewconnell.com/blog/articles/UseVirtualPCsDifferencingDisksToYourAdvantage.aspx">blog posting</a> on using differencing disks with Microsoft Virtual PC.</p>
+<p>Charles Chen argues <a href="http://www.charliedigital.com/PermaLink,guid,d06bde93-9fa9-4381-af42-0ee9d1330d63.aspx">the opposite</a> in his blog posting, defending SharePoint as a development environment and taking Palermo to task on a point-by-point basis.</p>
+<p>One thing I don't see mentioned by either is what I am going to refer to as the SharePoint Development Tax(tm).&#160; What is this tax?&#160; Is a break given to 95% of working families?&#160; Well, no.&#160; This tax comes in the form of time spent waiting for solutions to deploy, 12 hives to be copied, and app pools to be recycled.&#160; When working with SharePoint as a development environment, several times a day you will need to deploy solutions, which cause app pools to recycle, you may need to copy new assemblies to the GAC, again, requiring app pool recycles.&#160; So what's so bad about that?&#160; That happens all the time in ASP.NET development, why is it bad for SharePoint?&#160; Well.&#160; The issue is HOW LONG SharePoint takes to recycle.&#160; Sure, you could complain about my development environment, but I am running on a quad-core 2.2 GHz machine with 8 GB RAM, and I give my development VPC 3 GB RAM.&#160; How long does it take?&#160; On average, a solution deployment takes 45-60 seconds.&#160; An app pool recycle takes almost 2 minutes.&#160; I probably go through about 10-20 app pool recycles a day, eating up 20-40 minutes of time, not to mention lost productivity due to falling &quot;out of the zone&quot;.&#160; In Joel Spolsky's famed blog posting <a href="http://www.joelonsoftware.com/articles/fog0000000043.html">12 Steps to Better Code</a> there are several mentions of how a 15 second break in concentration causes a 15 minute lapse in productivity.&#160; </p>
+<p>Perhaps I should quit complaining though... The SharePoint Development Tax has given me lots of extra time to play guitar while watching spinning circle animations!</p>
