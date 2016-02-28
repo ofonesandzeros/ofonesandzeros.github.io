@@ -3,11 +3,7 @@ layout: post
 status: publish
 published: true
 title: SPLimitedWebPartManager Memory Leak?
-author:
-  display_name: bryan
-  login: bryan
-  email: bryan.napier.md@gmail.com
-  url: ''
+author: Bryan Napier
 author_login: bryan
 author_email: bryan.napier.md@gmail.com
 wordpress_id: 14
@@ -142,44 +138,43 @@ comments:
     Thanks for the correction!
 ---
 <p>Have a look at the following code segment:</p>
-<pre class="csharpcode"><span class="kwrd">while</span>(<span class="kwrd">true</span>)
+{% highlight c# %}
+while(true)
 {
-    <span class="kwrd">using</span> (SPSite siteCollection =
-        <span class="kwrd">new</span> SPSite(<span class="str">"http://localhost"</span>))
-    <span class="kwrd">using</span> (SPWeb site =
-        siteCollection.OpenWeb(<span class="str">"/Marketing"</span>))
+    using (SPSite siteCollection =
+        new SPSite("http://localhost"))
+    using (SPWeb site =
+        siteCollection.OpenWeb("/Marketing"))
     {
-        SPFolder pagesFolder = site.GetFolder(<span class="str">"Pages"</span>);
-
-        <span class="kwrd">foreach</span> (SPFile page <span class="kwrd">in</span> pagesFolder.Files)
+        SPFolder pagesFolder = site.GetFolder("Pages");
+        foreach (SPFile page in pagesFolder.Files)
         {
             WL(page.Url);
-
-            <span class="kwrd">using</span> (SPLimitedWebPartManager webPartManager =
+            using (SPLimitedWebPartManager webPartManager =
                 page.GetLimitedWebPartManager
                     (PersonalizationScope.Shared))
             {
             }
         }
     }
-}</pre>
+}
+{% endhighlight %}
 <p>With this code segment I'm just connecting to a site and iterating over the page collection, grabbing and instance of the page's SPLimitedWebPartManager as I go.  Since SPLimitedWebPartManager implements the IDisposable pattern I am being a good citizen and wrapping its instantiation in a using {} block.  The problem with this code segment is that this is what it does to the process memory:</p>
 <p><a href="http://www2.ofonesandzeros.com/wp-content/uploads/2007/06/image11.png" atomicselection="true"><img src="http://www2.ofonesandzeros.com/wp-content/uploads/2007/06/image-thumb11.png" style="border-width: 0px" alt="image" border="0" height="315" width="428" /></a></p>
 <p>Now, if I change the source code to this:</p>
-<pre class="csharpcode"><span class="kwrd">while</span>(<span class="kwrd">true</span>)
+{% highlight c# %}
+while(true)
 {
-    <span class="kwrd">using</span> (SPSite siteCollection =
-        <span class="kwrd">new</span> SPSite(<span class="str">"http://localhost"</span>))
-    <span class="kwrd">using</span> (SPWeb site =
-        siteCollection.OpenWeb(<span class="str">"/Marketing"</span>))
+    using (SPSite siteCollection =
+        new SPSite("http://localhost"))
+    using (SPWeb site =
+        siteCollection.OpenWeb("/Marketing"))
     {
-        SPFolder pagesFolder = site.GetFolder(<span class="str">"Pages"</span>);
-
-        <span class="kwrd">foreach</span> (SPFile page <span class="kwrd">in</span> pagesFolder.Files)
+        SPFolder pagesFolder = site.GetFolder("Pages");
+        foreach (SPFile page in pagesFolder.Files)
         {
             WL(page.Url);
-
-            <span class="kwrd">using</span> (SPLimitedWebPartManager webPartManager =
+            using (SPLimitedWebPartManager webPartManager =
                 page.GetLimitedWebPartManager
                     (PersonalizationScope.Shared))
             {
@@ -187,35 +182,39 @@ comments:
             }
         }
     }
-}</pre>
+}
+{% endhighlight %}
 <p>The memory picture looks much different now:</p>
 <p><a href="/wp-content/image2.png" atomicselection="true"><img src="/wp-content/image-thumb2.png" style="border-width: 0px" alt="image" border="0" height="345" width="470" /></a></p>
 <p>The only difference being the addition of an explicit Dispose() within the webPartManager using.</p>
 <p>A look inside the SPFile.GetLimitedWebPartManager call reveals that it calls an internal GetLimitedWebPartManagerInternal() method on the SPFile SPWeb member variable.  A closer look at this method shows the following code:</p>
-<pre class="csharpcode">SPWeb web = <span class="kwrd">this</span>.Site.OpenWeb();
-<span class="kwrd">if</span> (<span class="kwrd">this</span>.AllowUnsafeUpdates)
+{% highlight c# %}
+SPWeb web = this.Site.OpenWeb();
+if (this.AllowUnsafeUpdates)
 {
-    web.AllowUnsafeUpdates = <span class="kwrd">this</span>.AllowUnsafeUpdates;
+    web.AllowUnsafeUpdates = this.AllowUnsafeUpdates;
 }
-SPWebPartManager manager = web.GetWebPartManagerInternal(pageUrl, requestedView, forRender, includeHidden, <span class="kwrd">out</span> bytes);</pre>
+SPWebPartManager manager = web.GetWebPartManagerInternal(pageUrl, requestedView, forRender, includeHidden, out bytes);
+{% endhighlight %}
 <p>We see here that a new SPWeb object is getting spun up, and in the call to GetWebPartManagerInternal an assignment is going to be made to the SPLimitedWebPartManager m_web member variable.  If we look at the Dispose() implementation for SPLimitedWebPartManager, we see the following:</p>
-<pre class="csharpcode"><span class="kwrd">public</span> <span class="kwrd">void</span> Dispose()
+{% highlight c# %}
+public void Dispose()
 {
-    <span class="kwrd">if</span> (!<span class="kwrd">this</span>.m_disposed)
+    if (!this.m_disposed)
     {
-        <span class="kwrd">if</span> (<span class="kwrd">this</span>.m_manager != <span class="kwrd">null</span>)
+        if (this.m_manager != null)
         {
-            <span class="kwrd">this</span>.m_manager.Dispose();
+            this.m_manager.Dispose();
         }
     }
-    <span class="kwrd">else</span>
+    else
     {
-        <span class="kwrd">return</span>;
+        return;
     }
-    <span class="kwrd">this</span>.m_webParts = <span class="kwrd">null</span>;
-    <span class="kwrd">this</span>.m_manager = <span class="kwrd">null</span>;
-    <span class="kwrd">this</span>.m_disposed = <span class="kwrd">true</span>;
-}</pre>
+    this.m_webParts = null;
+    this.m_manager = null;
+    this.m_disposed = true;
+}
+{% endhighlight %}
 <p>Nothing is being done to dispose of the m_web!  If I explicitly dispose of m_web, then memory stays low.</p>
 <p>Is anyone encountering the same?</p>
-<style type="text/css">.csharpcode, .csharpcode pre { 	font-size: small; 	color: black; 	font-family: consolas, "Courier New", courier, monospace; 	background-color: #ffffff; 	/*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt  { 	background-color: #f4f4f4; 	width: 100%; 	margin: 0em; } .csharpcode .lnum { color: #606060; } </style>

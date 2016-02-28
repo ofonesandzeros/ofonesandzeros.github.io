@@ -3,11 +3,7 @@ layout: post
 status: publish
 published: true
 title: Programmatically Changing the Show and Hide Ribbon Navigation Setting
-author:
-  display_name: bryan
-  login: bryan
-  email: bryan.napier.md@gmail.com
-  url: ''
+author: Bryan Napier
 author_login: bryan
 author_email: bryan.napier.md@gmail.com
 wordpress_id: 215
@@ -22,13 +18,14 @@ tags:
 comments: []
 ---
 <p>Much like everything I blog about, I had a requirement from a customer to programmatically set the "Show and Hide Ribbon" setting that is seen within the Navigation configuration page off of Site Settings (a.k.a. the _layouts/AreaNavigationSettings.aspx page).  I looked all through the SPWeb.Navigation options and the PublishingWeb.Navigation options and couldn't find it.  Then I remembered the oldest trick in the book, decompiling SharePoint!  I brought up the Microsoft.SharePoint.Publishing.dll in <a href="http://www.telerik.com/products/decompiling.aspx">Telerik JustDecompile</a> and found the codebehind implementation for the page.  Once there it was easy to figure out how to make the change.  Fast-forward, here it is:</p>
-<p>[sourcecode language="C#"]<br />
-SPWeb web = null; // works better if you actually set this to a valid instance<br />
-// so this property, the __DisplayShowHideRibbonActionId, doesn't exist unless it's set to No!<br />
-// so in this instance we are setting it to No, but if you want to set it to Yes you just<br />
-// want to clear the value for the property.  make it string.Empty, or just delete the<br />
-// property entirely.<br />
-web.AllProperties["__DisplayShowHideRibbonActionId"] = "False";<br />
-// Update your web, do a jig.<br />
-web.Update();<br />
-[/sourcecode] </p>
+<p>{% highlight c# %}
+SPWeb web = null;
+// works better if you actually set this to a valid instance
+// so this property, the __DisplayShowHideRibbonActionId, doesn't exist unless it's set to No!
+// so in this instance we are setting it to No, but if you want to set it to Yes you just
+// want to clear the value for the property.  make it string.Empty, or just delete the
+// property entirely.
+web.AllProperties["__DisplayShowHideRibbonActionId"] = "False";
+// Update your web, do a jig.
+web.Update();
+{% endhighlight %}</p>

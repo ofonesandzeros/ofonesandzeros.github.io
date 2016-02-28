@@ -3,11 +3,7 @@ layout: post
 status: publish
 published: true
 title: My First Linq Program
-author:
-  display_name: bryan
-  login: bryan
-  email: bryan.napier.md@gmail.com
-  url: ''
+author: Bryan Napier
 author_login: bryan
 author_email: bryan.napier.md@gmail.com
 wordpress_id: 27
@@ -28,57 +24,51 @@ comments:
   content: Very nice one. i created my first application.
 ---
 <p>I successfully coded my very first LINQ program today, and man is it a doozie!  Observe:</p>
-<pre class="csharpcode"><span class="kwrd">class</span> Program
+{% highlight c# %}
+class Program
 {
-    <span class="kwrd">static</span> <span class="kwrd">void</span> Main(<span class="kwrd">string</span>[] args)
+    static void Main(string[] args)
     {
-        List&lt;Student&gt; studentList = <span class="kwrd">new</span> List&lt;Student&gt;();
-
-        studentList.Add(<span class="kwrd">new</span> Student(<span class="str">"Charlie"</span>, <span class="str">"Brown"</span>));
-        studentList.Add(<span class="kwrd">new</span> Student(<span class="str">"Drew"</span>, <span class="str">"Carrie"</span>));
-
-        IEnumerable&lt;Student&gt; students =
+        List<Student> studentList = new List<Student>();
+        studentList.Add(new Student("Charlie", "Brown"));
+        studentList.Add(new Student("Drew", "Carrie"));
+        IEnumerable<Student> students =
             from
                 Student
-            <span class="kwrd">in</span>
+            in
                 studentList
-            <span class="kwrd">where</span>
-                Student.LastName.Equals(<span class="str">"Brown"</span>)
+            where
+                Student.LastName.Equals("Brown")
             select
                 Student;
-
-        <span class="kwrd">foreach</span> (Student student <span class="kwrd">in</span> students)
+        foreach (Student student in students)
         {
             Console.WriteLine(student.FirstName);
         }
-
         Console.ReadLine();
     }
 }
-
-<span class="kwrd">internal</span> <span class="kwrd">class</span> Student
+internal class Student
 {
-    <span class="kwrd">private</span> <span class="kwrd">string</span> _firstName;
-    <span class="kwrd">private</span> <span class="kwrd">string</span> _lastName;
-
-    <span class="kwrd">public</span> Student(<span class="kwrd">string</span> firstName, <span class="kwrd">string</span> lastName)
+    private string _firstName;
+    private string _lastName;
+    public Student(string firstName, string lastName)
     {
         _firstName = firstName;
         _lastName = lastName;
     }
-
-    <span class="kwrd">public</span> <span class="kwrd">string</span> LastName
+    public string LastName
     {
-        get { <span class="kwrd">return</span> _lastName; }
-        set { _lastName = <span class="kwrd">value</span>; }
+        get { return _lastName; }
+        set { _lastName = value; }
     }
-
-    <span class="kwrd">public</span> <span class="kwrd">string</span> FirstName
+    public string FirstName
     {
-        get { <span class="kwrd">return</span> _firstName; }
-        set { _firstName = <span class="kwrd">value</span>; }
+        get { return _firstName; }
+        set { _firstName = value; }
     }
-}</pre>
+}
+{% endhighlight %}
 <p><!-- .csharpcode, .csharpcode pre { 	font-size: small; 	color: black; 	font-family: consolas, "Courier New", courier, monospace; 	background-color: #ffffff; 	/*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt { 	background-color: #f4f4f4; 	width: 100%; 	margin: 0em; } .csharpcode .lnum { color: #606060; } --></p>
 <p> Which when run looks like:</p>
 <p><a href="http://www2.ofonesandzeros.com/wp-content/uploads/2007/06/croppercapture31.jpg"><img style="border-top-width: 0px; border-left-width: 0px; border-bottom-width: 0px; border-right-width: 0px" src="http://www2.ofonesandzeros.com/wp-content/uploads/2007/06/croppercapture3-thumb1.jpg" border="0" alt="CropperCapture[3]" width="572" height="286" /></a></p>

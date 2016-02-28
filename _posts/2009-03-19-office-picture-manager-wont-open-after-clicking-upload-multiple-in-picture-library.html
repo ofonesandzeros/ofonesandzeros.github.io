@@ -4,11 +4,7 @@ status: publish
 published: true
 title: Office Picture Manager won’t open after clicking &quot;Upload Multiple&quot;
   in Picture Library
-author:
-  display_name: bryan
-  login: bryan
-  email: bryan.napier.md@gmail.com
-  url: ''
+author: Bryan Napier
 author_login: bryan
 author_email: bryan.napier.md@gmail.com
 wordpress_id: 102
@@ -114,35 +110,12 @@ comments:
     report and they don't have a solution.  check with you later Bryan.
 ---
 <p>There's a title for you!&#160; In any event, a client ha an issue where after clicking &quot;Upload Multiple&quot; in a SharePoint Picture Library, the Microsoft Office Picture Manager would not load.&#160; After digging through the page source, it was determined that SharePoint uses the &quot;OISCTRL.OISClientLauncher&quot; class from the &quot;OISCTRL.dll&quot; to power the Upload Multiple functionality in Picture Libraries.&#160; I wrote the following script to test the functionality of this component on the client machine:</p>
-<div class="csharpcode">
-<pre class="alt"><span class="lnum">   1:  </span><span class="kwrd">Set</span> o = CreateObject(<span class="str">&quot;OISCTRL.OISClientLauncher&quot;</span>)</pre>
-<pre><span class="lnum">   2:  </span>o.LaunchOIS <span class="str">&quot;ois.exe /upload &quot;</span><span class="str">&quot;http://sharepointpicturelibraryurl.com&quot;</span><span class="str">&quot;&quot;</span></pre>
-</div>
-<style type="text/css">
-<p>.csharpcode, .csharpcode pre<br />
-{<br />
-	font-size: small;<br />
-	color: black;<br />
-	font-family: consolas, "Courier New", courier, monospace;<br />
-	background-color: #ffffff;<br />
-	/*white-space: pre;*/<br />
-}<br />
-.csharpcode pre { margin: 0em; }<br />
-.csharpcode .rem { color: #008000; }<br />
-.csharpcode .kwrd { color: #0000ff; }<br />
-.csharpcode .str { color: #006080; }<br />
-.csharpcode .op { color: #0000c0; }<br />
-.csharpcode .preproc { color: #cc6633; }<br />
-.csharpcode .asp { background-color: #ffff00; }<br />
-.csharpcode .html { color: #800000; }<br />
-.csharpcode .attr { color: #ff0000; }<br />
-.csharpcode .alt<br />
-{<br />
-	background-color: #f4f4f4;<br />
-	width: 100%;<br />
-	margin: 0em;<br />
-}<br />
-.csharpcode .lnum { color: #606060; }</style></p>
+{% highlight c# %}
+Set o = CreateObject("OISCTRL.OISClientLauncher")
+o.LaunchOIS "ois.exe /upload ""http://sharepointpicturelibraryurl.com"""
+{% endhighlight %}
 <p>The result was &quot;Unspecified error&quot;.&#160; A further review of the SharePoint javascript indicated that it first looks for &quot;OISCTRL.OISClientLauncher&quot; but if it doesn't find it, it will fall back to good 'ole &quot;STSUPLD.DLL&quot; which powers the standard upload multiple functionality.&#160; For now, we have worked around the issue by unregistering &quot;OISCTRL.dll&quot; which is in the C:Program FilesMicrosoft OfficeOFFICE12 directory:</p>
-<pre class="csharpcode">regsvr32 /u OISCTRL.dll</pre>
+{% highlight shell %}
+regsvr32 /u OISCTRL.dll
+{% endhighlight %}
 <p>If anyone has an actual fix for OISCTRL.dll not being able to launch the ois.exe process, let me know!</p>

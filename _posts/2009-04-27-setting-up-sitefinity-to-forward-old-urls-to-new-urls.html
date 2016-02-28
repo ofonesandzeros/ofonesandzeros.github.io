@@ -3,11 +3,7 @@ layout: post
 status: publish
 published: true
 title: Setting up Sitefinity to forward old Urls to new Urls
-author:
-  display_name: bryan
-  login: bryan
-  email: bryan.napier.md@gmail.com
-  url: ''
+author: Bryan Napier
 author_login: bryan
 author_email: bryan.napier.md@gmail.com
 wordpress_id: 105
@@ -50,13 +46,13 @@ Dismiss all dialogs<br />
 <strong>Step 2: Modify Web.Config<br />
 </strong><br />
 Add as many types as you want into the httphnadler section of your web.config.<br />
-[sourcecode language='Xml']<br />
-<httpHandlers><br />
-<add path="*.htm" verb="*" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" validate="false"/><br />
-<add path="*.html" verb="*" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" validate="false"/><br />
-<add path="*.asp" verb="*" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" validate="false"/><br />
-</httpHandlers><br />
-[/sourcecode]<br />
+{% highlight xml %}<br />
+<httpHandlers>
+<add path="*.htm" verb="*" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" validate="false"/>
+<add path="*.html" verb="*" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" validate="false"/>
+<add path="*.asp" verb="*" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" validate="false"/>
+</httpHandlers>
+{% endhighlight %}<br />
 <!-- .csharpcode, .csharpcode pre { 	font-size: small; 	color: black; 	font-family: consolas, "Courier New", courier, monospace; 	background-color: #ffffff; 	/*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt { 	background-color: #f4f4f4; 	width: 100%; 	margin: 0em; } .csharpcode .lnum { color: #606060; } --><strong>Step 3:  Set Default Page Properties</strong></p>
 <ul>
 <li>Open Sitefinity Admin</li>
@@ -69,31 +65,32 @@ Add as many types as you want into the httphnadler section of your web.config.<b
 </ul>
 <p><strong>Step 4: Write code using Telerik API</strong></p>
 <p>Add this bit of code to your global.asax<br />
-[sourcecode language="c#"]</p>
-<p>void Application_Error(object sender, EventArgs e)<br />
-{<br />
-Exception lastException = this.Server.GetLastError();<br />
-if (lastException is HttpException)<br />
-{<br />
-HttpException httpException = (HttpException)lastException;<br />
-if (httpException.GetHttpCode() == 404)<br />
-{<br />
-// get the name of the requested page - just the /thisPage.htm or /DIR/thisPage.asp etc<br />
-string pageName = string.Concat("~", Request.Url.AbsolutePath.ToString());<br />
-// create a new instance of CmsManager<br />
-Telerik.Cms.CmsManager cmsManager = new Telerik.Cms.CmsManager();<br />
-// let’s get the page by passing one of it’s additional url’s<br />
-Telerik.Cms.IPage myPage = cmsManager.GetPageByAdditionalUrl(pageName);<br />
-// we can cast myPage as ICmsPage and redirect to the Default URL<br />
-if (myPage != null)<br />
-{<br />
-Response.Redirect(((Telerik.Cms.ICmsPage)myPage).DefaultUrl.Url);<br />
-this.Server.ClearError();<br />
-}<br />
-}<br />
-}<br />
-}</p>
-<p>[/sourcecode]<br />
+</p>
+{% highlight c# %}
+void Application_Error(object sender, EventArgs e)
+{
+  Exception lastException = this.Server.GetLastError();
+  if (lastException is HttpException)
+  {
+    HttpException httpException = (HttpException)lastException;
+    if (httpException.GetHttpCode() == 404)
+    {
+      // get the name of the requested page - just the /thisPage.htm or /DIR/thisPage.asp etc
+      string pageName = string.Concat("~", Request.Url.AbsolutePath.ToString());
+      // create a new instance of CmsManager
+      Telerik.Cms.CmsManager cmsManager = new Telerik.Cms.CmsManager();
+      // let’s get the page by passing one of it’s additional url’s
+      Telerik.Cms.IPage myPage = cmsManager.GetPageByAdditionalUrl(pageName);
+      // we can cast myPage as ICmsPage and redirect to the Default URL
+      if (myPage != null)
+      {
+        Response.Redirect(((Telerik.Cms.ICmsPage)myPage).DefaultUrl.Url);
+        this.Server.ClearError();
+      }
+    }
+  }
+}
+{% endhighlight %}
 <!-- .csharpcode, .csharpcode pre { 	font-size: small; 	color: black; 	font-family: consolas, "Courier New", courier, monospace; 	background-color: #ffffff; 	/*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt { 	background-color: #f4f4f4; 	width: 100%; 	margin: 0em; } .csharpcode .lnum { color: #606060; } -->Now if you come to the site with contact.htm and it doesn’t exist, you will be redirected to contact.aspx.</p>
 <p>I hope this helps</p></blockquote>
 <p>A huge thank-you to Randy for not only figuring this out, but posting the results!</p>

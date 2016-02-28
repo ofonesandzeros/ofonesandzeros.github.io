@@ -3,11 +3,7 @@ layout: post
 status: publish
 published: true
 title: Truncating Transaction Logs in SQL 2008
-author:
-  display_name: bryan
-  login: bryan
-  email: bryan.napier.md@gmail.com
-  url: ''
+author: Bryan Napier
 author_login: bryan
 author_email: bryan.napier.md@gmail.com
 wordpress_id: 182
@@ -100,50 +96,50 @@ comments:
 ---
 <p>One of my clients is beginning to migrate to SQL 2008 for their SharePoint farms.&#160; In the past, we have used scripts to truncate the transaction logs and shrink the DBs in the non-production environments using the “BACKUP LOG [dbname] WITH TRUNCATE_ONLY” command.&#160; As you may be aware, the “WITH TRUNCATE_ONLY” option has been deprecated in SQL 2008.&#160; In SQL 2008 instead you need to change the recovery mode of the database to SIMPLE and then back to FULL in order to truncate the log (or perform a backup of the log of course).&#160; In production environments obviously backing up the transaction log often is the best strategy, however in non-production environments that isn’t always feasible.&#160; I wrote the following script for this client to truncate the log all databases other than the system ones.&#160; </p>
 <p>Enjoy!</p>
-<p>[sourcecode language="sql"]<br />
-DECLARE @DatabaseNames TABLE<br />
-(<br />
-	name varchar(255)<br />
-)</p>
-<p>INSERT INTO @DatabaseNames<br />
-SELECT name FROM sys.databases WHERE<br />
-name NOT IN ( 'master', 'model', 'msdb', 'tempdb' )</p>
-<p>DECLARE DatabaseCursor CURSOR FOR<br />
-SELECT * FROM @DatabaseNames</p>
-<p>OPEN DatabaseCursor</p>
-<p>DECLARE @DatabaseName varchar(255)<br />
-DECLARE @LogFileName varchar(255)<br />
-DECLARE @SqlStatement varchar(2000)</p>
-<p>FETCH NEXT FROM DatabaseCursor INTO @DatabaseName</p>
-<p>WHILE @@FETCH_STATUS=0<br />
-BEGIN<br />
-	PRINT '----------------------------------------------------------'<br />
-	PRINT 'Processing database ' + @DatabaseName<br />
-	PRINT '----------------------------------------------------------'</p>
-<p>	SET @SqlStatement = 'ALTER DATABASE [' + @DatabaseName +<br />
-		'] SET RECOVERY SIMPLE'</p>
-<p>	PRINT @SqlStatement<br />
-	EXEC (@SqlStatement)</p>
-<p>	SET @LogFileName =<br />
-		(<br />
-			SELECT b.name<br />
-			FROM sys.databases a<br />
-			INNER JOIN sys.master_files b ON<br />
-				a.database_id = b.database_id<br />
-			WHERE<br />
-				a.name = @DatabaseName<br />
-				AND b.name LIKE '%log')</p>
-<p>	PRINT @LogFileName</p>
-<p>	SET @SqlStatement = 'USE [' + @DatabaseName +<br />
-		'] DBCC SHRINKFILE(N''' + @LogFileName + ''', 1)'</p>
-<p>	PRINT @SqlStatement<br />
-	EXEC (@SqlStatement)</p>
-<p>	SET @SqlStatement = 'ALTER DATABASE [' + @DatabaseName +<br />
-		'] SET RECOVERY FULL'</p>
-<p>	PRINT @SqlStatement<br />
-	EXEC (@SqlStatement)</p>
-<p>	FETCH NEXT FROM DatabaseCursor INTO @DatabaseName<br />
-END</p>
-<p>CLOSE DatabaseCursor<br />
-DEALLOCATE DatabaseCursor<br />
-[/sourcecode] </p>
+<p>{% highlight sql %}
+DECLARE @DatabaseNames TABLE
+(
+	name varchar(255)
+)
+INSERT INTO @DatabaseNames
+SELECT name FROM sys.databases WHERE
+name NOT IN ( 'master', 'model', 'msdb', 'tempdb' )
+DECLARE DatabaseCursor CURSOR FOR
+SELECT * FROM @DatabaseNames
+OPEN DatabaseCursor
+DECLARE @DatabaseName varchar(255)
+DECLARE @LogFileName varchar(255)
+DECLARE @SqlStatement varchar(2000)
+FETCH NEXT FROM DatabaseCursor INTO @DatabaseName
+WHILE @@FETCH_STATUS=0
+BEGIN
+	PRINT '----------------------------------------------------------'
+	PRINT 'Processing database ' + @DatabaseName
+	PRINT '----------------------------------------------------------'
+	SET @SqlStatement = 'ALTER DATABASE [' + @DatabaseName +
+		'] SET RECOVERY SIMPLE'
+	PRINT @SqlStatement
+	EXEC (@SqlStatement)
+	SET @LogFileName =
+		(
+			SELECT b.name
+			FROM sys.databases a
+			INNER JOIN sys.master_files b ON
+				a.database_id = b.database_id
+			WHERE
+				a.name = @DatabaseName
+				AND b.name LIKE '%log')
+	PRINT @LogFileName
+	SET @SqlStatement = 'USE [' + @DatabaseName +
+		'] DBCC SHRINKFILE(N''' + @LogFileName + ''', 1)'
+	PRINT @SqlStatement
+	EXEC (@SqlStatement)
+	SET @SqlStatement = 'ALTER DATABASE [' + @DatabaseName +
+		'] SET RECOVERY FULL'
+	PRINT @SqlStatement
+	EXEC (@SqlStatement)
+	FETCH NEXT FROM DatabaseCursor INTO @DatabaseName
+END
+CLOSE DatabaseCursor
+DEALLOCATE DatabaseCursor
+{% endhighlight %}</p>
