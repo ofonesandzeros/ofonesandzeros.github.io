@@ -160,7 +160,7 @@ while(true)
 }
 {% endhighlight %}
 <p>With this code segment I'm just connecting to a site and iterating over the page collection, grabbing and instance of the page's SPLimitedWebPartManager as I go.  Since SPLimitedWebPartManager implements the IDisposable pattern I am being a good citizen and wrapping its instantiation in a using {} block.  The problem with this code segment is that this is what it does to the process memory:</p>
-<p><a href="http://www2.ofonesandzeros.com/wp-content/uploads/2007/06/image11.png" atomicselection="true"><img src="http://www2.ofonesandzeros.com/wp-content/uploads/2007/06/image-thumb11.png" style="border-width: 0px" alt="image" border="0" height="315" width="428" /></a></p>
+<p><a href="/images/2007/06/image11.png" atomicselection="true"><img src="/images/2007/06/image-thumb11.png" style="border-width: 0px" alt="image" border="0" height="315" width="428" /></a></p>
 <p>Now, if I change the source code to this:</p>
 {% highlight c# %}
 while(true)
@@ -185,7 +185,7 @@ while(true)
 }
 {% endhighlight %}
 <p>The memory picture looks much different now:</p>
-<p><a href="/wp-content/image2.png" atomicselection="true"><img src="/wp-content/image-thumb2.png" style="border-width: 0px" alt="image" border="0" height="345" width="470" /></a></p>
+<em>Sorry, somehow through several blog migrations this one image has been lost.  Pretend this is a memory graph showing that the memory actually does not keep growing but instead actually releases back to 0.</em>
 <p>The only difference being the addition of an explicit Dispose() within the webPartManager using.</p>
 <p>A look inside the SPFile.GetLimitedWebPartManager call reveals that it calls an internal GetLimitedWebPartManagerInternal() method on the SPFile SPWeb member variable.  A closer look at this method shows the following code:</p>
 {% highlight c# %}
