@@ -4,12 +4,13 @@ title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](http://jekyllrb.com/)
+Welcome to my (often neglected) blog!  
 
-You can find the source code for the Jekyll new theme at:
-{% include icon-github.html username="jglovier" %} /
-[jekyll-new](https://github.com/jglovier/jekyll-new)
+I've been in the IT industry for about 20 years now, primarily as a developer.  
+A large portion of my career has been spent on Microsoft technologies, as you will
+note from the SharePoint-related articles on my site, but more recently I have been
+focusing on hybrid mobile application development (hope to get some articles up
+on that soon).
 
-You can find the source code for Jekyll at
-{% include icon-github.html username="jekyll" %} /
-[jekyll](https://github.com/jekyll/jekyll)
+In any event, thanks for stopping by, and if you want more information on me
+feel free to check out my [LinkedIn profile](https://www.linkedin.com/in/bryannapier).

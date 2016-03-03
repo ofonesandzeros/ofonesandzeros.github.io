@@ -2,12 +2,23 @@
  * Site header
  */
 .site-header {
-    border-top: 5px solid $grey-color-dark;
-    border-bottom: 1px solid $grey-color-light;
-    min-height: 56px;
+    min-height: 217px;
+    background: url('../images/bg_top.gif') repeat-x 0 0;
 
     // Positioning context for the mobile navigation icon
     position: relative;
+}
+
+.site-header {
+  .top-nav {
+    min-height: 27px;
+  }
+
+  .header-logo {
+    min-height: 107px;
+    padding-top: 25px;
+    background: url('../images/bg_top_gradient.gif') no-repeat 60px 0;
+  }
 }
 
 .site-title {
@@ -25,7 +36,7 @@
 }
 
 .site-nav {
-    float: right;
+    float: left;
     line-height: 56px;
 
     .menu-icon {
